@@ -1,157 +1,233 @@
-// music-player.js - Расширенный аудиоплеер с исправлениями
-document.addEventListener('DOMContentLoaded', function() {
-    const audio = document.getElementById('background-music');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const mainPlayPauseBtn = document.getElementById('mainPlayPause');
-    const muteBtn = document.getElementById('muteBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const musicProgress = document.getElementById('musicProgress');
-    const trackProgress = document.getElementById('trackProgress');
-    const mainProgressBar = document.getElementById('mainProgressBar');
-    const currentSongElement = document.getElementById('currentSong');
-    const nowPlayingElement = document.getElementById('nowPlaying');
-    const footerSongElement = document.getElementById('footerSong');
-    const currentTimeElement = document.getElementById('currentTime');
-    const totalTimeElement = document.getElementById('totalTime');
-    const currentAlbumElement = document.getElementById('currentAlbum');
-    const vinyl = document.getElementById('vinyl');
-    const currentCover = document.getElementById('currentCover');
-    const prevTrackBtn = document.getElementById('prevTrack');
-    const nextTrackBtn = document.getElementById('nextTrack');
-    
-    // Исправляем путь к музыке
-    if (audio.querySelector('source[type="audio/mp4"]')) {
-        const m4aSource = audio.querySelector('source[type="audio/mp4"]');
-        m4aSource.src = "music/t1.m4a";
+// music-player.js - Продвинутый аудиоплеер
+
+class MusicPlayer {
+    constructor() {
+        this.audio = document.getElementById('backgroundAudio');
+        this.playBtn = document.getElementById('playBtn');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.playerProgress = document.getElementById('playerProgress');
+        this.progressBar = document.querySelector('.progress-bar');
+        this.timeCurrent = document.getElementById('timeCurrent');
+        this.timeTotal = document.getElementById('timeTotal');
+        this.playerTitle = document.getElementById('playerTitle');
+        this.playerArtist = document.getElementById('playerArtist');
+        this.coverImage = document.getElementById('coverImage');
+        this.vinyl = document.getElementById('vinyl');
+        this.tracksList = document.getElementById('tracksList');
+        
+        this.tracks = window.app?.tracksData || [
+            { title: 'Наша песня #1', artist: 'Воспоминание', duration: 225, color: '#ff6b8b', file: 't1.m4a' },
+            { title: 'Наша песня #2', artist: 'Дорога домой', duration: 260, color: '#6b8bff', file: 't2.m4a' },
+            { title: 'Наша песня #3', artist: 'Тихий вечер', duration: 195, color: '#ff8e6b', file: 't3.m4a' },
+            { title: 'Наша песня #4', artist: 'Утреннее солнце', duration: 245, color: '#6bff8e', file: 't4.m4a' },
+            { title: 'Наша песня #5', artist: 'Ночной разговор', duration: 230, color: '#ff6bd6', file: 't5.m4a' }
+        ];
+        
+        this.currentTrackIndex = 0;
+        this.isPlaying = false;
+        this.volume = 0.7;
+        
+        this.init();
     }
     
-    // Плейлист
-    const tracks = [
-        {
-            title: 'Наша песня #1',
-            album: 'Трек из нашей истории',
-            duration: 180, // секунды
-            color: '#ff6b8b',
-            // Если у тебя есть несколько треков, можешь указать их здесь:
-            // src: 'music/t1.m4a'
-        },
-        {
-            title: 'Наша песня #2',
-            album: 'Вторая тема',
-            duration: 200,
-            color: '#6b8bff'
-        },
-        {
-            title: 'Наша песня #3',
-            album: 'Третья тема',
-            duration: 220,
-            color: '#ff8e6b'
-        }
-    ];
-    
-    let currentTrackIndex = 0;
-    let isPlaying = false;
-    
-    // Инициализация
-    function init() {
-        // Настройка аудио
-        audio.volume = volumeSlider.value / 100;
-        audio.loop = false;
+    init() {
+        this.setupAudio();
+        this.setupControls();
+        this.setupTracksList();
+        this.loadTrack(this.currentTrackIndex);
         
-        // Загрузка первого трека
-        loadTrack(currentTrackIndex);
+        // Попытка автовоспроизведения
+        this.attemptAutoPlay();
         
-        // События для аудио
-        audio.addEventListener('timeupdate', updateProgress);
-        audio.addEventListener('ended', nextTrack);
-        audio.addEventListener('loadedmetadata', updateDuration);
-        audio.addEventListener('canplay', function() {
+        console.log('🎵 Музыкальный плеер инициализирован');
+    }
+    
+    setupAudio() {
+        this.audio.volume = this.volume;
+        this.audio.loop = false;
+        
+        // События аудио
+        this.audio.addEventListener('timeupdate', () => this.updateProgress());
+        this.audio.addEventListener('ended', () => this.nextTrack());
+        this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
+        this.audio.addEventListener('canplay', () => {
             console.log('Аудио готово к воспроизведению');
-            // Попытка автовоспроизведения после загрузки
-            setTimeout(attemptAutoPlay, 500);
         });
         
-        // Обработка ошибок аудио
-        audio.addEventListener('error', function(e) {
-            console.error('Ошибка загрузки аудио:', audio.error);
-            console.log('Попытка загрузить fallback...');
+        this.audio.addEventListener('error', (e) => {
+            console.error('Ошибка аудио:', this.audio.error);
+            this.showAudioError();
+        });
+    }
+    
+    setupControls() {
+        // Кнопка play/pause
+        this.playBtn.addEventListener('click', () => this.togglePlay());
+        
+        // Кнопки переключения треков
+        this.prevBtn.addEventListener('click', () => this.prevTrack());
+        this.nextBtn.addEventListener('click', () => this.nextTrack());
+        
+        // Прогресс-бар
+        this.progressBar.addEventListener('click', (e) => this.seek(e));
+        
+        // Громкость через свайп на мобильных
+        this.setupVolumeControl();
+    }
+    
+    setupTracksList() {
+        this.tracksList.innerHTML = '';
+        
+        this.tracks.forEach((track, index) => {
+            const trackElement = document.createElement('div');
+            trackElement.className = 'track-item';
+            if (index === this.currentTrackIndex) {
+                trackElement.classList.add('active');
+            }
             
-            // Пробуем использовать другой источник
-            const mp3Source = audio.querySelector('source[type="audio/mpeg"]');
-            if (mp3Source) {
-                audio.src = mp3Source.src;
-                audio.load();
+            trackElement.innerHTML = `
+                <div class="track-number">${(index + 1).toString().padStart(2, '0')}</div>
+                <div class="track-info">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
+                </div>
+                <div class="track-play">
+                    <i class="fas fa-${index === this.currentTrackIndex && this.isPlaying ? 'pause' : 'play'}"></i>
+                </div>
+            `;
+            
+            trackElement.addEventListener('click', () => {
+                if (index === this.currentTrackIndex) {
+                    this.togglePlay();
+                } else {
+                    this.loadTrack(index);
+                    this.play();
+                }
+            });
+            
+            this.tracksList.appendChild(trackElement);
+        });
+    }
+    
+    setupVolumeControl() {
+        // Свайп вверх/вниз для громкости на мобильных
+        let touchStartY;
+        let initialVolume = this.volume;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.player-controls')) {
+                touchStartY = e.touches[0].clientY;
+                initialVolume = this.audio.volume;
             }
         });
         
-        // События для элементов управления
-        playPauseBtn.addEventListener('click', togglePlay);
-        mainPlayPauseBtn.addEventListener('click', togglePlay);
-        muteBtn.addEventListener('click', toggleMute);
-        volumeSlider.addEventListener('input', changeVolume);
-        mainProgressBar.addEventListener('click', seek);
-        
-        // Навигация по трекам
-        prevTrackBtn.addEventListener('click', prevTrack);
-        nextTrackBtn.addEventListener('click', nextTrack);
-        
-        // События для треков в списке
-        document.querySelectorAll('.track-item').forEach((item, index) => {
-            item.addEventListener('click', () => playTrack(index));
+        document.addEventListener('touchmove', (e) => {
+            if (touchStartY !== undefined && e.target.closest('.player-controls')) {
+                e.preventDefault();
+                const touchY = e.touches[0].clientY;
+                const diff = touchStartY - touchY;
+                const volumeChange = diff / 200; // 200px = полная громкость
+                
+                let newVolume = initialVolume + volumeChange;
+                newVolume = Math.max(0, Math.min(1, newVolume));
+                
+                this.audio.volume = newVolume;
+                this.showVolumeIndicator(newVolume);
+            }
         });
         
-        // События для треков в сайдбаре
-        document.querySelectorAll('.sidebar-tracks .track-item').forEach((item, index) => {
-            item.addEventListener('click', () => playTrack(index));
+        document.addEventListener('touchend', () => {
+            touchStartY = undefined;
+            setTimeout(() => {
+                this.hideVolumeIndicator();
+            }, 1000);
         });
-        
-        // Принудительно загружаем аудио
-        audio.load();
     }
     
-    function attemptAutoPlay() {
-        console.log('Попытка автовоспроизведения...');
-        
-        // Проверяем, загружено ли аудио
-        if (audio.readyState < 2) {
-            console.log('Аудио еще не загружено, ждем...');
-            setTimeout(attemptAutoPlay, 500);
-            return;
+    showVolumeIndicator(volume) {
+        let indicator = document.getElementById('volumeIndicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'volumeIndicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 20px;
+                font-size: 1.5rem;
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            document.body.appendChild(indicator);
         }
         
-        const playPromise = audio.play();
+        const volumePercent = Math.round(volume * 100);
+        indicator.innerHTML = `
+            <i class="fas fa-volume-${volumePercent > 50 ? 'up' : volumePercent > 0 ? 'down' : 'mute'}"></i>
+            <span>${volumePercent}%</span>
+        `;
         
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Автовоспроизведение успешно!');
-                setPlaying(true);
-            }).catch(error => {
-                console.log("Автовоспроизведение заблокировано. Требуется клик пользователя.");
-                // Показываем подсказку
-                showPlayHint();
-            });
+        indicator.style.display = 'flex';
+    }
+    
+    hideVolumeIndicator() {
+        const indicator = document.getElementById('volumeIndicator');
+        if (indicator) {
+            indicator.style.display = 'none';
         }
     }
     
-    function showPlayHint() {
+    attemptAutoPlay() {
+        // Ждем немного перед автовоспроизведением
+        setTimeout(() => {
+            if (this.audio.readyState >= 2) {
+                this.play().catch(error => {
+                    console.log('Автовоспроизведение заблокировано:', error);
+                    this.showPlayHint();
+                });
+            } else {
+                // Если аудио еще не загружено, ждем
+                this.audio.addEventListener('canplay', () => {
+                    this.play().catch(error => {
+                        console.log('Автовоспроизведение заблокировано после загрузки:', error);
+                        this.showPlayHint();
+                    });
+                }, { once: true });
+            }
+        }, 2000);
+    }
+    
+    showPlayHint() {
         const hint = document.createElement('div');
         hint.className = 'play-hint';
         hint.innerHTML = `
             <div style="
                 position: fixed;
-                top: 20px;
+                bottom: 100px;
+                left: 20px;
                 right: 20px;
-                background: rgba(255, 107, 139, 0.9);
+                background: linear-gradient(135deg, #ff6b8b, #ff8e6b);
                 color: white;
-                padding: 15px;
-                border-radius: 10px;
+                padding: 20px;
+                border-radius: 20px;
                 z-index: 10000;
-                animation: fadeIn 0.5s;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                animation: slideUp 0.5s;
+                box-shadow: 0 10px 30px rgba(255, 107, 139, 0.4);
+                text-align: center;
+                font-size: 1.1rem;
+                font-weight: 600;
             ">
-                <p style="margin: 0; font-size: 14px;">
-                    <i class="fas fa-music"></i> Нажми на любую кнопку воспроизведения
-                </p>
+                <i class="fas fa-music" style="margin-right: 10px;"></i>
+                Нажми на кнопку воспроизведения, чтобы запустить музыку
             </div>
         `;
         document.body.appendChild(hint);
@@ -163,222 +239,179 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
-    function loadTrack(index) {
-        currentTrackIndex = index;
-        const track = tracks[index];
+    showAudioError() {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 86, 86, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 10000;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 86, 86, 0.4);
+        `;
         
-        // Обновление информации
-        nowPlayingElement.textContent = track.title;
-        currentSongElement.textContent = track.title;
-        footerSongElement.textContent = track.title;
-        currentAlbumElement.textContent = track.album;
-        currentCover.style.background = `linear-gradient(135deg, ${track.color}30, ${track.color}60)`;
-        currentCover.style.color = track.color;
+        errorDiv.innerHTML = `
+            <h3 style="margin-bottom: 10px;">
+                <i class="fas fa-exclamation-triangle"></i> Ошибка загрузки музыки
+            </h3>
+            <p style="margin-bottom: 15px; font-size: 0.9rem;">
+                Проверьте папку "music" и наличие файлов t1.m4a, t2.m4a и т.д.
+            </p>
+            <button onclick="this.parentNode.remove()" style="
+                background: white;
+                color: #ff5656;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 25px;
+                font-weight: 600;
+                cursor: pointer;
+            ">
+                Понятно
+            </button>
+        `;
         
-        // Обновление времени
-        totalTimeElement.textContent = formatTime(track.duration);
-        
-        // Обновление активного трека в списках
-        updateActiveTrack();
-        
-        // Анимация винила
-        vinyl.style.borderColor = `${track.color}50`;
-        vinyl.style.color = track.color;
-        
-        // Создание сердечек в цвет трека
-        createTrackHearts(track.color);
+        document.body.appendChild(errorDiv);
     }
     
-    function playTrack(index) {
-        console.log('Запуск трека:', index);
+    loadTrack(index) {
+        if (index < 0 || index >= this.tracks.length) return;
         
-        if (index === currentTrackIndex && isPlaying) {
-            togglePlay();
-            return;
-        }
+        this.currentTrackIndex = index;
+        const track = this.tracks[index];
         
-        if (index !== currentTrackIndex) {
-            loadTrack(index);
-        }
+        // Обновляем интерфейс
+        this.playerTitle.textContent = track.title;
+        this.playerArtist.textContent = track.artist;
+        this.timeTotal.textContent = this.formatTime(track.duration);
         
-        // Если аудио еще не загружено, загружаем
-        if (audio.readyState === 0) {
-            audio.load();
-        }
+        // Обновляем обложку
+        this.coverImage.style.background = `linear-gradient(135deg, ${track.color}40, ${track.color}80)`;
+        this.coverImage.style.color = track.color;
+        this.vinyl.style.borderColor = `${track.color}50`;
+        this.vinyl.style.color = track.color;
         
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                setPlaying(true);
-                console.log('Трек запущен');
-            }).catch(error => {
-                console.error('Ошибка воспроизведения:', error);
-                // Показываем сообщение об ошибке
-                alert('Для воспроизведения музыки нажмите "Разрешить" или обновите страницу');
-            });
-        }
-    }
-    
-    function togglePlay() {
-        console.log('Toggle play, текущий статус:', isPlaying);
-        
-        if (isPlaying) {
-            audio.pause();
-            setPlaying(false);
-        } else {
-            // Если аудио еще не загружено, загружаем
-            if (audio.readyState === 0) {
-                audio.load();
+        // Обновляем список треков
+        document.querySelectorAll('.track-item').forEach((item, i) => {
+            item.classList.toggle('active', i === index);
+            const icon = item.querySelector('.track-play i');
+            if (icon) {
+                icon.className = `fas fa-${i === index && this.isPlaying ? 'pause' : 'play'}`;
             }
-            
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    setPlaying(true);
-                }).catch(error => {
-                    console.error('Ошибка воспроизведения:', error);
-                    // Показываем простое сообщение
-                    currentSongElement.textContent = 'Нажмите еще раз для запуска';
-                    currentSongElement.style.animation = 'pulse 1s infinite';
-                });
+        });
+        
+        // Устанавливаем источник аудио
+        this.audio.src = `music/${track.file}`;
+        this.audio.load();
+        
+        // Обновляем футер
+        if (window.app && window.app.updateNowPlaying) {
+            window.app.updateNowPlaying(track);
+        }
+        
+        // Создаем сердечки в цвет трека
+        this.createTrackHearts(track.color);
+        
+        console.log(`🎶 Загружен трек: ${track.title}`);
+    }
+    
+    play() {
+        return this.audio.play().then(() => {
+            this.isPlaying = true;
+            this.updatePlayButton();
+            this.vinyl.classList.add('playing');
+            return true;
+        }).catch(error => {
+            console.error('Ошибка воспроизведения:', error);
+            this.isPlaying = false;
+            this.updatePlayButton();
+            return false;
+        });
+    }
+    
+    pause() {
+        this.audio.pause();
+        this.isPlaying = false;
+        this.updatePlayButton();
+        this.vinyl.classList.remove('playing');
+    }
+    
+    togglePlay() {
+        if (this.isPlaying) {
+            this.pause();
+        } else {
+            this.play();
+        }
+    }
+    
+    updatePlayButton() {
+        const icon = this.playBtn.querySelector('i');
+        if (icon) {
+            icon.className = this.isPlaying ? 'fas fa-pause' : 'fas fa-play';
+        }
+        
+        // Обновляем иконку в списке треков
+        const activeTrack = document.querySelector('.track-item.active');
+        if (activeTrack) {
+            const trackIcon = activeTrack.querySelector('.track-play i');
+            if (trackIcon) {
+                trackIcon.className = `fas fa-${this.isPlaying ? 'pause' : 'play'}`;
             }
         }
-        
-        // Убираем анимацию пульсации
-        playPauseBtn.style.animation = '';
-        mainPlayPauseBtn.style.animation = '';
     }
     
-    function setPlaying(playing) {
-        isPlaying = playing;
+    prevTrack() {
+        let newIndex = this.currentTrackIndex - 1;
+        if (newIndex < 0) newIndex = this.tracks.length - 1;
         
-        if (playing) {
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            playPauseBtn.classList.add('playing');
-            mainPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            mainPlayPauseBtn.classList.add('playing');
-            vinyl.classList.add('spinning');
-            currentSongElement.style.animation = '';
-        } else {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            playPauseBtn.classList.remove('playing');
-            mainPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            mainPlayPauseBtn.classList.remove('playing');
-            vinyl.classList.remove('spinning');
+        this.loadTrack(newIndex);
+        if (this.isPlaying) {
+            this.play();
         }
     }
     
-    function toggleMute() {
-        audio.muted = !audio.muted;
+    nextTrack() {
+        let newIndex = this.currentTrackIndex + 1;
+        if (newIndex >= this.tracks.length) newIndex = 0;
         
-        if (audio.muted) {
-            muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            muteBtn.style.color = '#666';
-        } else {
-            muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-            muteBtn.style.color = '#ff6b8b';
+        this.loadTrack(newIndex);
+        if (this.isPlaying) {
+            this.play();
         }
     }
     
-    function changeVolume() {
-        audio.volume = volumeSlider.value / 100;
-        
-        if (audio.volume === 0) {
-            muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            muteBtn.style.color = '#666';
-        } else {
-            muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-            muteBtn.style.color = '#ff6b8b';
+    updateProgress() {
+        if (this.audio.duration) {
+            const progress = (this.audio.currentTime / this.audio.duration) * 100;
+            this.playerProgress.style.width = `${progress}%`;
+            this.timeCurrent.textContent = this.formatTime(this.audio.currentTime);
         }
     }
     
-    function updateProgress() {
-        if (audio.duration && !isNaN(audio.duration)) {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            musicProgress.style.width = `${progress}%`;
-            trackProgress.style.width = `${progress}%`;
-            currentTimeElement.textContent = formatTime(audio.currentTime);
-        }
-    }
-    
-    function updateDuration() {
-        if (audio.duration && !isNaN(audio.duration)) {
-            totalTimeElement.textContent = formatTime(audio.duration);
+    updateDuration() {
+        if (this.audio.duration) {
+            this.timeTotal.textContent = this.formatTime(this.audio.duration);
             // Обновляем длительность в массиве треков
-            if (tracks[currentTrackIndex]) {
-                tracks[currentTrackIndex].duration = audio.duration;
+            if (this.tracks[this.currentTrackIndex]) {
+                this.tracks[this.currentTrackIndex].duration = this.audio.duration;
             }
         }
     }
     
-    function seek(e) {
-        const rect = this.getBoundingClientRect();
+    seek(e) {
+        const rect = this.progressBar.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
         
-        if (audio.duration && !isNaN(audio.duration)) {
-            audio.currentTime = percent * audio.duration;
+        if (this.audio.duration) {
+            this.audio.currentTime = percent * this.audio.duration;
         }
     }
     
-    function prevTrack() {
-        currentTrackIndex--;
-        if (currentTrackIndex < 0) {
-            currentTrackIndex = tracks.length - 1;
-        }
-        loadTrack(currentTrackIndex);
-        
-        if (isPlaying) {
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(console.error);
-            }
-        }
-    }
-    
-    function nextTrack() {
-        currentTrackIndex++;
-        if (currentTrackIndex >= tracks.length) {
-            currentTrackIndex = 0;
-        }
-        loadTrack(currentTrackIndex);
-        
-        if (isPlaying) {
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(console.error);
-            }
-        }
-    }
-    
-    function updateActiveTrack() {
-        // Обновление главного списка
-        document.querySelectorAll('.track-item').forEach((item, index) => {
-            if (index === currentTrackIndex) {
-                item.classList.add('active');
-                const icon = item.querySelector('.track-play i');
-                if (icon) {
-                    icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
-                }
-            } else {
-                item.classList.remove('active');
-                const icon = item.querySelector('.track-play i');
-                if (icon) {
-                    icon.className = 'fas fa-play';
-                }
-            }
-        });
-        
-        // Обновление сайдбара
-        document.querySelectorAll('.sidebar-tracks .track-item').forEach((item, index) => {
-            if (index === currentTrackIndex) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
-    }
-    
-    function formatTime(seconds) {
+    formatTime(seconds) {
         if (isNaN(seconds)) return '0:00';
         
         const mins = Math.floor(seconds / 60);
@@ -386,43 +419,51 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
     
-    function createTrackHearts(color) {
-        // Создаем 3 сердечка в цвет трека
-        for (let i = 0; i < 3; i++) {
+    createTrackHearts(color) {
+        // Создаем 5 сердечек в цвет трека
+        for (let i = 0; i < 5; i++) {
             setTimeout(() => {
                 if (typeof window.createValentineHeart === 'function') {
                     const x = Math.random() * window.innerWidth;
-                    const y = window.innerHeight;
+                    const y = window.innerHeight + 50;
                     const size = Math.random() * 25 + 15;
                     window.createValentineHeart(x, y, size, color);
                 }
-            }, i * 300);
+            }, i * 200);
         }
     }
     
-    // Инициализация плеера
-    init();
+    // Публичные методы
+    playTrack(index) {
+        if (index === this.currentTrackIndex && this.isPlaying) {
+            this.togglePlay();
+        } else {
+            this.loadTrack(index);
+            this.play();
+        }
+    }
     
-    // Экспорт функций для глобального использования
-    window.musicPlayer = {
-        play: () => {
-            audio.play().then(() => setPlaying(true)).catch(console.error);
-        },
-        pause: () => {
-            audio.pause();
-            setPlaying(false);
-        },
-        playTrack,
-        nextTrack,
-        prevTrack,
-        getCurrentTrack: () => tracks[currentTrackIndex],
-        getCurrentTrackIndex: () => currentTrackIndex
-    };
+    getCurrentTrack() {
+        return this.tracks[this.currentTrackIndex];
+    }
     
-    // Для отладки
-    console.log('Аудиоплеер инициализирован');
-    console.log('Источники аудио:', {
-        m4a: audio.querySelector('source[type="audio/mp4"]')?.src,
-        mp3: audio.querySelector('source[type="audio/mpeg"]')?.src
-    });
+    getCurrentTrackIndex() {
+        return this.currentTrackIndex;
+    }
+    
+    setVolume(volume) {
+        this.volume = Math.max(0, Math.min(1, volume));
+        this.audio.volume = this.volume;
+    }
+    
+    getVolume() {
+        return this.volume;
+    }
+}
+
+// Инициализация плеера при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        window.musicPlayer = new MusicPlayer();
+    }, 1000);
 });
