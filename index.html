@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>💘 Наша История | Valentine</title>
+    <title>💘 Наша История | С 30.08.2025</title>
     
-    <!-- Мета-теги для красивого отображения на телефоне -->
+    <!-- Мета-теги -->
     <meta name="theme-color" content="#ff6b8b">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- Иконки -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💘</text></svg>">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💘</text></svg>">
     
     <!-- Стили -->
@@ -19,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Swiper для слайдера фото -->
+    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 <body>
@@ -29,27 +27,26 @@
             <div class="loading-heart">
                 <i class="fas fa-heart"></i>
             </div>
-            <div class="loading-text">Загружаем нашу историю...</div>
+            <div class="loading-text" id="loadingText">Загружаем нашу историю...</div>
             <div class="loading-progress"></div>
         </div>
     </div>
 
-    <!-- Частицы на фоне -->
+    <!-- Частицы -->
     <div id="particles-js"></div>
     
-    <!-- Летающие сердечки -->
+    <!-- Сердечки -->
     <div id="hearts-container"></div>
     
     <!-- Главный контейнер -->
     <div class="main-container">
-        <!-- Мобильное меню (кнопка гамбургер) -->
+        <!-- Мобильное меню -->
         <div class="mobile-menu-btn" id="mobileMenuBtn">
             <div class="menu-line"></div>
             <div class="menu-line"></div>
             <div class="menu-line"></div>
         </div>
 
-        <!-- Боковое меню для мобильных -->
         <div class="mobile-menu" id="mobileMenu">
             <div class="menu-header">
                 <div class="menu-logo">💘</div>
@@ -70,11 +67,8 @@
                 <a href="#messages" class="menu-item">
                     <i class="fas fa-comments"></i> Переписки
                 </a>
-                <a href="#quotes" class="menu-item">
-                    <i class="fas fa-quote-right"></i> Цитаты
-                </a>
-                <a href="#gallery" class="menu-item">
-                    <i class="fas fa-heart"></i> Наши моменты
+                <a href="#memories" class="menu-item">
+                    <i class="fas fa-heart"></i> Воспоминания
                 </a>
             </div>
         </div>
@@ -84,25 +78,25 @@
             <div class="header-overlay"></div>
             
             <div class="header-content">
-                <!-- Дата и счетчик -->
+                <!-- Автоматическая дата и счетчик -->
                 <div class="date-counter">
-                    <div class="date">14.02.2024</div>
+                    <div class="date" id="currentDate">Загрузка даты...</div>
                     <div class="counter" id="daysCounter">
                         <span class="number">0</span>
                         <span class="label">дней вместе</span>
                     </div>
                 </div>
                 
-                <!-- Главный заголовок -->
+                <!-- Заголовок -->
                 <div class="main-title-wrapper">
                     <h1 class="main-title">
                         <span class="title-line line-1">Наша</span>
                         <span class="title-line line-2">История</span>
-                        <span class="title-line line-3">в Музыке</span>
+                        <span class="title-line line-3">С 30 Августа</span>
                     </h1>
                     
-                    <div class="title-subtitle">
-                        Каждый трек — наше воспоминание
+                    <div class="title-subtitle" id="daysTogetherText">
+                        Каждый день - новая страница нашей любви
                     </div>
                 </div>
                 
@@ -119,9 +113,9 @@
                     </div>
                 </div>
                 
-                <!-- Кнопка скролла -->
+                <!-- Скролл -->
                 <div class="scroll-down">
-                    <div class="scroll-text">Листай дальше</div>
+                    <div class="scroll-text">Листай нашу историю</div>
                     <div class="scroll-icon">
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -133,59 +127,55 @@
         <div class="playlist-btn" id="playlistBtn">
             <i class="fas fa-music"></i>
             <span class="btn-text">Наш плейлист</span>
-            <div class="badge" id="playlistBadge">3</div>
+            <div class="badge" id="playlistBadge">🎵</div>
         </div>
 
         <!-- Основной контент -->
         <main class="main-content">
-            <!-- Секция фотографий -->
+            <!-- Фотографии -->
             <section class="section photos-section" id="photos">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-camera-retro"></i>
-                        <span class="title-text">Наши моменты</span>
+                        <i class="fas fa-camera"></i>
+                        <span class="title-text">Наши фотографии</span>
                     </h2>
-                    <p class="section-subtitle">Застывшие мгновения нашей истории</p>
+                    <p class="section-subtitle">Моменты, которые останутся с нами навсегда</p>
                 </div>
                 
                 <div class="photos-container">
-                    <!-- Слайдер для мобильных -->
+                    <!-- Swiper для мобильных -->
                     <div class="swiper photos-swiper">
                         <div class="swiper-wrapper" id="photosSwiperWrapper">
-                            <!-- Фото будут добавлены через JS -->
+                            <!-- Фото загружаются через JS -->
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
                     
                     <!-- Сетка для десктопа -->
                     <div class="photos-grid" id="photosGrid">
-                        <!-- Фото будут добавлены через JS -->
+                        <!-- Фото загружаются через JS -->
                     </div>
                 </div>
                 
-                <!-- Индикатор загрузки фото -->
-                <div class="photos-loading" id="photosLoading">
-                    <div class="loading-dots">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                    <div class="loading-text">Загружаем фотографии...</div>
+                <!-- Индикатор -->
+                <div class="photos-info" id="photosInfo">
+                    <div class="photos-count" id="photosCount">0 фотографий</div>
+                    <div class="photos-hint">💡 Добавьте свои фото в папку images/</div>
                 </div>
             </section>
 
-            <!-- Секция плейлиста -->
+            <!-- Плейлист -->
             <section class="section playlist-section" id="playlist">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-headphones-alt"></i>
+                        <i class="fas fa-headphones"></i>
                         <span class="title-text">Наш саундтрек</span>
                     </h2>
-                    <p class="section-subtitle">Песни, которые стали нашей историей</p>
+                    <p class="section-subtitle">Музыка наших чувств и эмоций</p>
                 </div>
                 
                 <div class="playlist-container">
-                    <!-- Основной плеер -->
+                    <!-- Главный плеер -->
                     <div class="player-main">
                         <div class="player-cover" id="playerCover">
                             <div class="cover-image" id="coverImage">
@@ -197,8 +187,8 @@
                         </div>
                         
                         <div class="player-info">
-                            <h3 class="player-title" id="playerTitle">Выберите трек</h3>
-                            <p class="player-artist" id="playerArtist">Наша песня</p>
+                            <h3 class="player-title" id="playerTitle">Наша песня</h3>
+                            <p class="player-artist" id="playerArtist">Выберите трек</p>
                             
                             <div class="player-progress">
                                 <div class="time-current" id="timeCurrent">0:00</div>
@@ -224,109 +214,64 @@
                     
                     <!-- Список треков -->
                     <div class="tracks-list" id="tracksList">
-                        <!-- Треки будут добавлены через JS -->
+                        <!-- Треки загружаются через JS -->
                     </div>
                 </div>
             </section>
 
-            <!-- Секция переписок -->
+            <!-- Переписки -->
             <section class="section messages-section" id="messages">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-comment-dots"></i>
-                        <span class="title-text">Наши переписки</span>
+                        <i class="fas fa-comment"></i>
+                        <span class="title-text">Наши слова</span>
                     </h2>
-                    <p class="section-subtitle">Сообщения, которые согревают душу</p>
+                    <p class="section-subtitle">Сообщения, которые согревают сердце</p>
                 </div>
                 
                 <div class="messages-container">
-                    <!-- Контейнер для переписок -->
+                    <!-- Чат -->
                     <div class="chat-container" id="chatContainer">
-                        <!-- Сообщения будут добавлены через JS -->
+                        <!-- Сообщения через JS -->
                     </div>
                     
-                    <!-- Элементы для перетаскивания -->
-                    <div class="messages-pool" id="messagesPool">
-                        <!-- Свайп-элементы -->
-                        <div class="swipe-messages">
-                            <div class="swipe-track" id="swipeTrack">
-                                <!-- Переписки будут добавлены через JS -->
-                            </div>
+                    <!-- Свайп-переписки -->
+                    <div class="messages-pool">
+                        <div class="swipe-track" id="swipeTrack">
+                            <!-- Карточки через JS -->
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Секция галереи -->
-            <section class="section gallery-section" id="gallery">
+            <!-- Воспоминания -->
+            <section class="section memories-section" id="memories">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-heart"></i>
-                        <span class="title-text">Наше путешествие</span>
+                        <i class="fas fa-star"></i>
+                        <span class="title-text">Наши воспоминания</span>
                     </h2>
                     <p class="section-subtitle">Как все начиналось и продолжается</p>
                 </div>
                 
                 <!-- Таймлайн -->
                 <div class="timeline" id="timeline">
-                    <!-- Таймлайн элементы будут добавлены через JS -->
-                </div>
-                
-                <!-- Плавающие элементы -->
-                <div class="floating-elements">
-                    <div class="floating-element element-1">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="floating-element element-2">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="floating-element element-3">
-                        <i class="fas fa-music"></i>
-                    </div>
-                    <div class="floating-element element-4">
-                        <i class="fas fa-camera"></i>
-                    </div>
+                    <!-- Заполняется через JS -->
                 </div>
             </section>
 
-            <!-- Секция цитат -->
-            <section class="section quotes-section" id="quotes">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-quote-right"></i>
-                        <span class="title-text">Наши слова</span>
-                    </h2>
-                    <p class="section-subtitle">Фразы, которые говорят о главном</p>
-                </div>
-                
-                <div class="quotes-container">
-                    <div class="quote-slider">
-                        <div class="quote-slide active">
-                            <div class="quote-text">"Любовь — это когда твоя мелодия становится моей мелодией, и вместе мы создаем гармонию."</div>
-                            <div class="quote-author">— Тот самый вечер</div>
-                        </div>
-                        <div class="quote-slide">
-                            <div class="quote-text">"Каждая песня в нашем плейлисте — это страница нашей книги, которую мы пишем вместе."</div>
-                            <div class="quote-author">— Дорога домой</div>
-                        </div>
-                        <div class="quote-slide">
-                            <div class="quote-text">"Ты — лучшая песня, которую я когда-либо слышал. И я хочу слушать ее вечно."</div>
-                            <div class="quote-author">— Наше утро</div>
-                        </div>
+            <!-- Послание -->
+            <section class="section message-section">
+                <div class="love-letter">
+                    <div class="letter-content">
+                        <h3>Для тебя, моя любовь</h3>
+                        <p>С 30 августа 2025 года каждый день с тобой - это подарок.</p>
+                        <p>Этот сайт - наша история, которая продолжается прямо сейчас.</p>
+                        <p>Здесь будут наши фото, музыка, переписки и воспоминания.</p>
+                        <p>Я люблю тебя больше с каждым днем.</p>
                     </div>
-                    
-                    <div class="quote-controls">
-                        <button class="quote-prev">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <div class="quote-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                        <button class="quote-next">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                    <div class="letter-heart" id="letterHeart">
+                        <i class="fas fa-heart"></i>
                     </div>
                 </div>
             </section>
@@ -339,19 +284,19 @@
                     <i class="fas fa-heart"></i>
                 </div>
                 <div class="footer-text">
-                    <p>Создано с бесконечной любовью и одной песней в сердце</p>
-                    <p class="footer-date">14 февраля 2024 | Наша история продолжается...</p>
+                    <p>Создано с любовью для нас</p>
+                    <p class="footer-date" id="footerDate">7 февраля 2026</p>
                 </div>
-                <div class="footer-music">
-                    <div class="now-playing" id="nowPlayingFooter">
-                        <i class="fas fa-play"></i>
-                        <span class="song-title">Выберите трек из плейлиста</span>
+                <div class="footer-counter">
+                    <div class="counter-item">
+                        <span class="counter-number" id="totalDays">0</span>
+                        <span class="counter-label">дней вместе</span>
                     </div>
                 </div>
             </div>
         </footer>
 
-        <!-- Модальное окно плейлиста -->
+        <!-- Модалка плейлиста -->
         <div class="playlist-modal" id="playlistModal">
             <div class="modal-overlay" id="modalOverlay"></div>
             <div class="modal-content">
@@ -367,13 +312,13 @@
                 
                 <div class="modal-body">
                     <div class="playlist-tracks" id="modalTracks">
-                        <!-- Треки будут добавлены через JS -->
+                        <!-- Треки через JS -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Модальное окно фото -->
+        <!-- Модалка фото -->
         <div class="photo-modal" id="photoModal">
             <div class="modal-overlay" id="photoModalOverlay"></div>
             <div class="modal-content photo-content">
@@ -391,9 +336,9 @@
         </div>
     </div>
 
-    <!-- Аудио элемент -->
+    <!-- Аудио -->
     <audio id="backgroundAudio" loop>
-        <!-- Источники будут добавлены через JS -->
+        <!-- Источники через JS -->
     </audio>
 
     <!-- Скрипты -->
@@ -401,9 +346,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="particles.js"></script>
     <script src="hearts.js"></script>
-    <script src="parallax.js"></script>
     <script src="music-player.js"></script>
-    <script src="messages.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
