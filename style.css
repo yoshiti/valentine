@@ -1669,3 +1669,212 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+/* Добавьте эти стили в конец вашего style.css */
+
+/* iPhone specific fixes */
+body.iphone {
+    -webkit-text-size-adjust: 100%;
+}
+
+body.iphone-notch {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+body.iphone-notch .main-header {
+    min-height: calc(100vh - env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+}
+
+body.iphone-notch .mobile-menu-btn {
+    top: calc(env(safe-area-inset-top) + 1rem);
+}
+
+body.iphone-notch .playlist-btn {
+    bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
+}
+
+body.iphone-notch .mobile-menu {
+    padding-top: calc(env(safe-area-inset-top) + 1rem);
+}
+
+/* Fix for iPhone scrolling */
+body.iphone {
+    overflow-x: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Improve touch targets for iPhone */
+body.iphone .control-btn,
+body.iphone .track-item,
+body.iphone .menu-item {
+    min-height: 44px; /* Apple's recommended minimum touch target */
+}
+
+/* Fix for iPhone landscape mode */
+@media (orientation: landscape) and (max-height: 500px) {
+    body.iphone .main-header {
+        min-height: auto;
+        padding: 2rem 1rem;
+    }
+    
+    body.iphone .header-elements {
+        display: none;
+    }
+    
+    body.iphone .scroll-down {
+        display: none;
+    }
+}
+
+/* Fix for iPhone notch in portrait */
+@media (orientation: portrait) and (max-width: 430px) {
+    body.iphone-notch .main-title {
+        margin-top: env(safe-area-inset-top);
+    }
+    
+    body.iphone-notch .photos-swiper {
+        height: calc(50vh - env(safe-area-inset-top));
+    }
+}
+
+/* Prevent bounce effect on iOS */
+body.iphone {
+    overscroll-behavior: none;
+}
+
+/* Improve image loading on iPhone */
+body.iphone .photo-image {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Fix modal positioning on iPhone */
+body.iphone .modal-content {
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
+}
+/* Добавьте эти стили в конец вашего style.css */
+
+/* Анимация для плавающего текста */
+@keyframes floatUp {
+    0% {
+        transform: translateX(-50%) translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(calc(var(--random-x, 0px) - 50%)) translateY(-100vh) rotate(var(--random-rotate, 0deg));
+        opacity: 0;
+    }
+}
+
+/* Стили для плавающего текста "Люблю тебя" */
+.love-text-container div {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 107, 139, 0.5);
+    will-change: transform, opacity;
+}
+
+/* Адаптивность для текста на мобильных */
+@media (max-width: 768px) {
+    .love-text-container div {
+        font-size: 18px !important;
+    }
+}
+
+/* Исправление для Safari на iPhone */
+@supports (-webkit-touch-callout: none) {
+    .main-header {
+        min-height: -webkit-fill-available;
+    }
+    
+    body {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Улучшенные стили для плеера на мобильных */
+@media (max-width: 768px) {
+    .player-main {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .player-cover {
+        margin: 0 auto 20px !important;
+        width: 200px !important;
+        height: 200px !important;
+    }
+    
+    .player-info {
+        width: 100% !important;
+    }
+    
+    .player-controls {
+        justify-content: center !important;
+    }
+}
+
+/* Стили для треков в модалке */
+.modal-track .track-duration {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: auto;
+    padding-right: 10px;
+}
+
+.modal-track {
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-track:hover {
+    background: rgba(255, 107, 139, 0.1);
+}
+
+/* Улучшенные стили для свайп-карточек на мобильных */
+@media (max-width: 430px) {
+    .swipe-card {
+        width: 180px;
+        height: 130px;
+        padding: 12px;
+    }
+    
+    .card-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Фикс для высоты на iPhone с вырезом */
+@supports (padding: max(0px)) {
+    .main-header {
+        padding-top: env(safe-area-inset-top);
+        min-height: calc(100vh - env(safe-area-inset-top));
+    }
+    
+    .mobile-menu-btn {
+        top: calc(env(safe-area-inset-top) + 1rem);
+    }
+    
+    .playlist-btn {
+        bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
+    }
+}
+
+/* Предотвращение горизонтального скролла */
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Улучшение производительности анимаций */
+.love-text-container div,
+.floating-heart,
+.photo-item {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}

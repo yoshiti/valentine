@@ -2,12 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>💘 Наша История | С 30.08.2025</title>
     
-    <!-- Мета-теги -->
-    <meta name="theme-color" content="#ff6b8b">
+    <!-- Мета-теги для iPhone -->
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ff6b8b">
     
     <!-- Иконки -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💘</text></svg>">
@@ -32,8 +33,8 @@
         </div>
     </div>
 
-    <!-- Частицы -->
-    <div id="particles-js"></div>
+    <!-- Частицы с текстом "Люблю тебя" -->
+    <div id="love-particles"></div>
     
     <!-- Сердечки -->
     <div id="hearts-container"></div>
@@ -55,19 +56,19 @@
                 </div>
             </div>
             <div class="menu-items">
-                <a href="#header" class="menu-item active">
+                <a href="#header" class="menu-item active" data-menu="close">
                     <i class="fas fa-home"></i> Главная
                 </a>
-                <a href="#photos" class="menu-item">
+                <a href="#photos" class="menu-item" data-menu="close">
                     <i class="fas fa-images"></i> Фотографии
                 </a>
-                <a href="#playlist" class="menu-item">
+                <a href="#playlist" class="menu-item" data-menu="close">
                     <i class="fas fa-music"></i> Плейлист
                 </a>
-                <a href="#messages" class="menu-item">
+                <a href="#messages" class="menu-item" data-menu="close">
                     <i class="fas fa-comments"></i> Переписки
                 </a>
-                <a href="#memories" class="menu-item">
+                <a href="#memories" class="menu-item" data-menu="close">
                     <i class="fas fa-heart"></i> Воспоминания
                 </a>
             </div>
@@ -326,7 +327,7 @@
                     <i class="fas fa-times"></i>
                 </button>
                 <div class="modal-image">
-                    <img id="modalPhotoImage" src="" alt="Наше фото">
+                    <img id="modalPhotoImage" src="" alt="Наше фото" loading="lazy">
                 </div>
                 <div class="modal-info">
                     <div class="photo-date" id="modalPhotoDate"></div>
@@ -337,16 +338,10 @@
     </div>
 
     <!-- Аудио -->
-    <audio id="backgroundAudio" loop>
-        <!-- Источники через JS -->
-    </audio>
+    <audio id="backgroundAudio" preload="metadata"></audio>
 
     <!-- Скрипты -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="particles.js"></script>
-    <script src="hearts.js"></script>
-    <script src="music-player.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
