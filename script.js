@@ -1,32 +1,8 @@
-// script.js - Главный скрипт с текстом "Люблю тебя" и музыкой
+// script.js - Романтичный фон с созвездиями и начальным посланием
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Запускаем нашу историю...');
+    console.log('💫 Запускаем нашу историю...');
     
-    // Слова "Люблю тебя" на разных языках
-    const lovePhrases = [
-        "Я люблю тебя", // Русский
-        "I love you",   // Английский
-        "Te amo",       // Испанский
-        "Je t'aime",    // Французский
-        "Ich liebe dich", // Немецкий
-        "Ti amo",       // Итальянский
-        "愛してる",     // Японский
-        "사랑해",       // Корейский
-        "我爱你",       // Китайский
-        "Eu te amo",    // Португальский
-        "أحبك",         // Арабский
-        "Σ'αγαπώ",      // Греческий
-        "Volim te",     // Хорватский
-        "Mahal kita",   // Филиппинский
-        "Szeretlek",    // Венгерский
-        "Kocham Cię",   // Польский
-        "Te iubesc",    // Румынский
-        "Miluji tě",    // Чешский
-        "Jag älskar dig", // Шведский
-        "Ik hou van jou" // Голландский
-    ];
-
     // Константы
     const START_DATE = new Date('2025-08-30');
     const TODAY = new Date();
@@ -65,7 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn: document.getElementById('prevBtn'),
         nextBtn: document.getElementById('nextBtn'),
         tracksList: document.getElementById('tracksList'),
-        modalTracks: document.getElementById('modalTracks')
+        modalTracks: document.getElementById('modalTracks'),
+        mainMessage: document.getElementById('mainMessage'),
+        romanticBackground: document.getElementById('romanticBackground')
     };
     
     // Данные приложения
@@ -78,10 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTrack: 0,
         isPlaying: false,
         audio: document.getElementById('backgroundAudio'),
-        particles: []
+        messageVisible: true,
+        backgroundElements: []
     };
     
-    // Треки с названиями и цветами
+    // Треки
     const tracks = [
         {
             src: "music/t1.m4a",
@@ -130,8 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация
     async function init() {
         try {
-            // 1. Создаем текст "Люблю тебя" вместо частиц
-            createLoveTextParticles();
+            // 1. Создаем романтичный фон с созвездиями
+            createRomanticBackground();
             
             // 2. Рассчитываем даты
             calculateDates();
@@ -148,94 +127,246 @@ document.addEventListener('DOMContentLoaded', function() {
             // 6. Инициализируем остальные компоненты
             initComponents();
             
-            // 7. Прячем загрузку
+            // 7. Настраиваем начальное послание
+            setupMainMessage();
+            
+            // 8. Прячем загрузку
             hideLoadingScreen();
             
-            console.log('✅ Наша история загружена!');
+            console.log('✨ Наша история загружена!');
         } catch (error) {
             console.error('❌ Ошибка:', error);
             showErrorScreen();
         }
     }
     
-    // Создание текста "Люблю тебя" как частиц
-    function createLoveTextParticles() {
-        const container = document.getElementById('love-particles');
+    // Создание романтичного фона
+    function createRomanticBackground() {
+        if (!elements.romanticBackground) return;
+        
+        const container = elements.romanticBackground.querySelector('.constellation-container');
+        const stars = elements.romanticBackground.querySelector('.twinkling-stars');
+        
+        // Создаем созвездия (группы звезд с линиями)
+        createConstellations(container);
+        
+        // Создаем мерцающие звезды
+        createTwinklingStars(stars);
+        
+        // Анимация луны
+        createMoonAnimation();
+    }
+    
+    // Создание созвездий
+    function createConstellations(container) {
         if (!container) return;
         
-        // Создаем элемент для текста
-        const textContainer = document.createElement('div');
-        textContainer.className = 'love-text-container';
-        textContainer.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        `;
-        container.appendChild(textContainer);
+        // Определения созвездий в виде сердечек
+        const constellations = [
+            // Большое сердце
+            {
+                stars: [
+                    { x: 20, y: 30, size: 3 },
+                    { x: 30, y: 20, size: 4 },
+                    { x: 40, y: 30, size: 3 },
+                    { x: 35, y: 40, size: 2 },
+                    { x: 25, y: 40, size: 2 }
+                ],
+                connections: [[0,1], [1,2], [2,3], [3,4], [4,0]]
+            },
+            // Маленькое сердце
+            {
+                stars: [
+                    { x: 70, y: 60, size: 2 },
+                    { x: 75, y: 55, size: 3 },
+                    { x: 80, y: 60, size: 2 },
+                    { x: 77, y: 65, size: 2 },
+                    { x: 73, y: 65, size: 2 }
+                ],
+                connections: [[0,1], [1,2], [2,3], [3,4], [4,0]]
+            },
+            // Звездный путь
+            {
+                stars: [
+                    { x: 10, y: 80, size: 2 },
+                    { x: 25, y: 75, size: 3 },
+                    { x: 40, y: 70, size: 2 },
+                    { x: 55, y: 75, size: 3 },
+                    { x: 70, y: 80, size: 2 }
+                ],
+                connections: [[0,1], [1,2], [2,3], [3,4]]
+            }
+        ];
         
-        // Создаем несколько плавающих фраз
-        for (let i = 0; i < 15; i++) {
-            setTimeout(() => {
-                createFloatingLovePhrase(textContainer);
-            }, i * 300);
+        // Создаем созвездия
+        constellations.forEach((constellation, index) => {
+            // Создаем звезды
+            constellation.stars.forEach((star, starIndex) => {
+                const starEl = document.createElement('div');
+                starEl.className = 'constellation-star';
+                starEl.style.cssText = `
+                    position: absolute;
+                    left: ${star.x}%;
+                    top: ${star.y}%;
+                    width: ${star.size}px;
+                    height: ${star.size}px;
+                    background: white;
+                    border-radius: 50%;
+                    box-shadow: 0 0 ${star.size * 2}px rgba(255, 255, 255, 0.8);
+                    animation: starPulse ${2 + Math.random()}s infinite alternate;
+                    z-index: 1;
+                `;
+                container.appendChild(starEl);
+                appData.backgroundElements.push(starEl);
+            });
+            
+            // Создаем линии соединения
+            constellation.connections.forEach(connection => {
+                const [start, end] = connection;
+                const startStar = constellation.stars[start];
+                const endStar = constellation.stars[end];
+                
+                // Рассчитываем длину и угол линии
+                const dx = endStar.x - startStar.x;
+                const dy = endStar.y - startStar.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                const lineEl = document.createElement('div');
+                lineEl.className = 'constellation-line';
+                lineEl.style.cssText = `
+                    position: absolute;
+                    left: ${startStar.x}%;
+                    top: ${startStar.y}%;
+                    width: ${length}%;
+                    height: 1px;
+                    background: linear-gradient(90deg, 
+                        rgba(255, 107, 139, 0.6) 0%, 
+                        rgba(255, 255, 255, 0.8) 50%, 
+                        rgba(255, 107, 139, 0.6) 100%);
+                    transform-origin: 0 0;
+                    transform: rotate(${angle}deg);
+                    z-index: 0;
+                    animation: lineGlow ${3 + Math.random() * 2}s infinite alternate;
+                `;
+                container.appendChild(lineEl);
+                appData.backgroundElements.push(lineEl);
+            });
+        });
+        
+        // Добавляем несколько случайных звезд
+        for (let i = 0; i < 20; i++) {
+            const starEl = document.createElement('div');
+            const size = Math.random() * 2 + 1;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            starEl.className = 'random-star';
+            starEl.style.cssText = `
+                position: absolute;
+                left: ${x}%;
+                top: ${y}%;
+                width: ${size}px;
+                height: ${size}px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 0 ${size * 2}px rgba(255, 255, 255, 0.6);
+                animation: starTwinkle ${3 + Math.random() * 4}s infinite alternate;
+                z-index: 1;
+            `;
+            container.appendChild(starEl);
+            appData.backgroundElements.push(starEl);
         }
-        
-        // Периодически создаем новые фразы
-        setInterval(() => {
-            if (document.hasFocus()) {
-                createFloatingLovePhrase(textContainer);
-            }
-        }, 3000);
     }
     
-    // Создание одной плавающей фразы
-    function createFloatingLovePhrase(container) {
-        const phrase = lovePhrases[Math.floor(Math.random() * lovePhrases.length)];
-        const element = document.createElement('div');
+    // Создание мерцающих звезд
+    function createTwinklingStars(container) {
+        if (!container) return;
         
-        // Случайные параметры
-        const size = Math.random() * 24 + 16;
-        const startX = Math.random() * 100;
-        const duration = Math.random() * 20 + 15;
-        const color = getRandomColor();
-        const opacity = Math.random() * 0.6 + 0.3;
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement('div');
+            const size = Math.random() * 3 + 1;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = 2 + Math.random() * 3;
+            
+            star.className = 'twinkling-star';
+            star.style.cssText = `
+                position: absolute;
+                left: ${x}%;
+                top: ${y}%;
+                width: ${size}px;
+                height: ${size}px;
+                background: white;
+                border-radius: 50%;
+                opacity: 0;
+                animation: starTwinkle ${duration}s infinite ${delay}s;
+                z-index: 2;
+            `;
+            container.appendChild(star);
+            appData.backgroundElements.push(star);
+        }
+    }
+    
+    // Создание анимации луны
+    function createMoonAnimation() {
+        const moon = elements.romanticBackground.querySelector('.moon');
+        if (!moon) return;
         
-        element.textContent = phrase;
-        element.style.cssText = `
+        moon.style.cssText = `
             position: absolute;
-            left: ${startX}%;
-            top: 110%;
-            font-size: ${size}px;
-            color: ${color};
-            opacity: ${opacity};
-            font-weight: 600;
-            pointer-events: none;
-            white-space: nowrap;
-            transform: translateX(-50%);
-            text-shadow: 0 0 10px ${color}80;
-            z-index: 0;
-            animation: floatUp ${duration}s linear forwards;
+            right: 10%;
+            top: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 60px rgba(255, 236, 179, 0.6),
+                0 0 100px rgba(255, 236, 179, 0.4),
+                inset 20px -20px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            animation: moonGlow 8s ease-in-out infinite alternate;
         `;
-        
-        container.appendChild(element);
-        
-        // Удаляем после анимации
-        setTimeout(() => {
-            if (element.parentNode) {
-                element.parentNode.removeChild(element);
-            }
-        }, duration * 1000);
     }
     
-    // Получение случайного цвета
-    function getRandomColor() {
-        const colors = ['#ff6b8b', '#ff8e6b', '#6b8bff', '#6bff8e', '#ff6bd6', '#ff8e3b'];
-        return colors[Math.floor(Math.random() * colors.length)];
+    // Настройка главного послания
+    function setupMainMessage() {
+        if (!elements.mainMessage) return;
+        
+        // Показываем сообщение при загрузке
+        elements.mainMessage.classList.add('active');
+        
+        // Скрываем сообщение при скролле
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            elements.mainMessage.classList.remove('active');
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                // Показываем снова если не скроллили 3 секунды
+                if (window.scrollY < 100) {
+                    elements.mainMessage.classList.add('active');
+                }
+            }, 3000);
+        });
+        
+        // Скрытие по клику
+        elements.mainMessage.addEventListener('click', () => {
+            elements.mainMessage.classList.remove('active');
+        });
+        
+        // Анимация сердца в сообщении
+        const heart = elements.mainMessage.querySelector('.message-heart');
+        if (heart) {
+            setInterval(() => {
+                heart.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    heart.style.transform = 'scale(1)';
+                }, 500);
+            }, 2000);
+        }
     }
     
     // Рассчет дат
@@ -543,35 +674,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function initMusicPlayer() {
         if (!appData.audio) return;
         
-        // Настройка аудио
         appData.audio.volume = 0.7;
-        
-        // События аудио
         appData.audio.addEventListener('timeupdate', updateProgress);
         appData.audio.addEventListener('loadedmetadata', updateDuration);
         appData.audio.addEventListener('ended', nextTrack);
         
-        // Кнопки управления
-        if (elements.playBtn) {
-            elements.playBtn.addEventListener('click', togglePlay);
-        }
+        if (elements.playBtn) elements.playBtn.addEventListener('click', togglePlay);
+        if (elements.prevBtn) elements.prevBtn.addEventListener('click', prevTrack);
+        if (elements.nextBtn) elements.nextBtn.addEventListener('click', nextTrack);
+        if (elements.progressBar) elements.progressBar.addEventListener('click', seek);
         
-        if (elements.prevBtn) {
-            elements.prevBtn.addEventListener('click', prevTrack);
-        }
-        
-        if (elements.nextBtn) {
-            elements.nextBtn.addEventListener('click', nextTrack);
-        }
-        
-        if (elements.progressBar) {
-            elements.progressBar.addEventListener('click', seek);
-        }
-        
-        // Загружаем первый трек
         loadTrack(0);
-        
-        // Создаем список треков
         createTracksList();
     }
     
@@ -582,12 +695,10 @@ document.addEventListener('DOMContentLoaded', function() {
         appData.currentTrack = index;
         const track = tracks[index];
         
-        // Обновляем интерфейс
         if (elements.playerTitle) elements.playerTitle.textContent = track.title;
         if (elements.playerArtist) elements.playerArtist.textContent = track.artist;
         if (elements.timeTotal) elements.timeTotal.textContent = formatTime(track.duration);
         
-        // Обновляем обложку
         if (elements.coverImage) {
             elements.coverImage.style.background = `linear-gradient(135deg, ${track.color}40, ${track.color}80)`;
             elements.coverImage.style.color = track.color;
@@ -598,10 +709,7 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.vinyl.style.color = track.color;
         }
         
-        // Обновляем список
         updateTracksList();
-        
-        // Загружаем аудио
         appData.audio.src = track.src;
         appData.audio.load();
     }
@@ -641,7 +749,6 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.tracksList.appendChild(trackElement);
         });
         
-        // Также для модалки
         if (elements.modalTracks) {
             elements.modalTracks.innerHTML = '';
             tracks.forEach((track, index) => {
@@ -895,7 +1002,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let startX;
         let scrollLeft;
         
-        // Для мыши
         track.addEventListener('mousedown', (e) => {
             isDown = true;
             startX = e.pageX - track.offsetLeft;
@@ -921,7 +1027,6 @@ document.addEventListener('DOMContentLoaded', function() {
             track.scrollLeft = scrollLeft - walk;
         });
         
-        // Для тач-устройств
         track.addEventListener('touchstart', (e) => {
             isDown = true;
             startX = e.touches[0].pageX - track.offsetLeft;
@@ -1024,15 +1129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 for (let i = 0; i < 10; i++) {
                     setTimeout(() => {
-                        if (typeof window.createValentineHeart === 'function') {
-                            const rect = this.getBoundingClientRect();
-                            window.createValentineHeart(
-                                rect.left + rect.width / 2,
-                                rect.top + rect.height / 2,
-                                Math.random() * 20 + 15,
-                                '#ff6b8b'
-                            );
-                        }
+                        createFlyingHeart(this);
                     }, i * 100);
                 }
                 
@@ -1043,6 +1140,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => this.classList.remove('pulse'), 1000);
             });
         }
+    }
+    
+    // Создание летающего сердечка
+    function createFlyingHeart(element) {
+        const rect = element.getBoundingClientRect();
+        const heart = document.createElement('div');
+        heart.innerHTML = '❤️';
+        heart.style.cssText = `
+            position: fixed;
+            left: ${rect.left + rect.width / 2}px;
+            top: ${rect.top}px;
+            font-size: 24px;
+            z-index: 10000;
+            pointer-events: none;
+            animation: flyUp 1s ease-out forwards;
+            color: #ff6b8b;
+        `;
+        
+        document.body.appendChild(heart);
+        
+        setTimeout(() => {
+            heart.remove();
+        }, 1000);
     }
     
     // Анимации при скролле
@@ -1113,26 +1233,194 @@ document.addEventListener('DOMContentLoaded', function() {
     window.app = {
         openPhotoModal,
         getDaysTogether: () => appData.daysTogether,
-        getPhotos: () => appData.photos,
-        playMusic: play,
-        pauseMusic: pause,
-        nextTrack: nextTrack,
-        prevTrack: prevTrack
+        getPhotos: () => appData.photos
     };
 });
 
-// Стили для анимаций и текста
+// Стили для анимаций и фона
 const additionalStyles = document.createElement('style');
 additionalStyles.textContent = `
-    /* Анимация для плавающего текста */
-    @keyframes floatUp {
+    /* Анимации для звезд */
+    @keyframes starPulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes starTwinkle {
+        0%, 100% {
+            opacity: 0.2;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+    
+    @keyframes lineGlow {
+        0%, 100% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+    
+    @keyframes moonGlow {
+        0%, 100% {
+            box-shadow: 
+                0 0 60px rgba(255, 236, 179, 0.6),
+                0 0 100px rgba(255, 236, 179, 0.4),
+                inset 20px -20px 20px rgba(0, 0, 0, 0.1);
+        }
+        50% {
+            box-shadow: 
+                0 0 80px rgba(255, 236, 179, 0.8),
+                0 0 120px rgba(255, 236, 179, 0.6),
+                inset 20px -20px 20px rgba(0, 0, 0, 0.1);
+        }
+    }
+    
+    @keyframes flyUp {
         0% {
-            transform: translateX(-50%) translateY(0) rotate(0deg);
+            transform: translate(0, 0) scale(1);
             opacity: 1;
         }
         100% {
-            transform: translateX(${Math.random() * 100 - 50}px) translateY(-100vh) rotate(${Math.random() * 360}deg);
+            transform: translate(${Math.random() * 100 - 50}px, -100px) scale(0);
             opacity: 0;
+        }
+    }
+    
+    /* Романтичный фон */
+    .romantic-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #0a0b2e 0%, #1a1b4e 50%, #0a0b2e 100%);
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .constellation-container,
+    .twinkling-stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+    
+    /* Главное послание */
+    .main-message {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9998;
+        background: rgba(10, 11, 46, 0.9);
+        backdrop-filter: blur(5px);
+        transition: all 1s ease;
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    .main-message.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .message-content {
+        text-align: center;
+        padding: 2rem;
+        animation: messageAppear 2s ease;
+    }
+    
+    .love-title {
+        font-size: 4rem;
+        font-weight: 700;
+        color: #ff6b8b;
+        margin-bottom: 1rem;
+        font-family: 'Pacifico', cursive;
+        text-shadow: 0 0 20px rgba(255, 107, 139, 0.5);
+        animation: titleGlow 3s infinite alternate;
+    }
+    
+    .love-text {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        max-width: 500px;
+    }
+    
+    .message-heart {
+        font-size: 5rem;
+        color: #ff6b8b;
+        animation: heartBeat 2s infinite;
+    }
+    
+    @keyframes messageAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes titleGlow {
+        0%, 100% {
+            text-shadow: 0 0 20px rgba(255, 107, 139, 0.5);
+        }
+        50% {
+            text-shadow: 0 0 30px rgba(255, 107, 139, 0.8);
+        }
+    }
+    
+    @keyframes heartBeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+    }
+    
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+        .love-title {
+            font-size: 2.5rem;
+        }
+        
+        .love-text {
+            font-size: 1.2rem;
+            padding: 0 1rem;
+        }
+        
+        .message-heart {
+            font-size: 3.5rem;
+        }
+        
+        .moon {
+            width: 50px !important;
+            height: 50px !important;
+            right: 5% !important;
+            top: 5% !important;
         }
     }
     
@@ -1146,19 +1434,15 @@ additionalStyles.textContent = `
     
     .modal-track {
         margin-bottom: 8px;
+        transition: all 0.3s ease;
     }
     
-    /* Стили для плавающего текста */
-    .love-text-container {
-        font-family: 'Inter', sans-serif;
+    .modal-track:hover {
+        background: rgba(255, 107, 139, 0.1);
     }
     
-    /* Адаптивные стили для iPhone */
+    /* Улучшенные стили для плеера */
     @media (max-width: 768px) {
-        .love-text-container div {
-            font-size: 18px !important;
-        }
-        
         .player-main {
             flex-direction: column;
             text-align: center;
@@ -1167,19 +1451,25 @@ additionalStyles.textContent = `
         .player-cover {
             margin: 0 auto 20px !important;
         }
-    }
-    
-    /* Исправление для Safari на iPhone */
-    @supports (-webkit-touch-callout: none) {
-        .main-header {
-            min-height: -webkit-fill-available;
+        
+        .player-info {
+            width: 100% !important;
         }
         
-        body {
-            min-height: -webkit-fill-available;
+        .player-controls {
+            justify-content: center !important;
         }
     }
     
+    /* Исправление для iPhone с вырезом */
+    @supports (padding: max(0px)) {
+        .main-message {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    }
+    
+    /* Общие стили */
     .no-photos-message {
         text-align: center;
         padding: 40px 20px;
@@ -1315,21 +1605,6 @@ additionalStyles.textContent = `
     .timeline-item.visible {
         opacity: 1;
         transform: translateY(0);
-    }
-    
-    /* Адаптивность для iPhone */
-    @media (max-width: 430px) {
-        .main-title {
-            font-size: 2rem !important;
-        }
-        
-        .photos-swiper {
-            height: 300px !important;
-        }
-        
-        .swipe-card {
-            width: 180px;
-        }
     }
 `;
 document.head.appendChild(additionalStyles);
