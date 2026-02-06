@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Music Issue | Наша история в песнях</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@100;200;300;400;500;600;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+</head>
+<body>
+    <!-- Аудиоплеер (автоматически запускается) -->
+    <audio id="background-music" loop>
+        <source src="https://music.yandex.ru/album/22790137/track/105328067" type="audio/mpeg">
+        <source src="music/background.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Частицы на фоне -->
+    <div id="particles-js"></div>
+    
+    <!-- Контейнер для летающих сердечек -->
+    <div id="hearts-container"></div>
+    
+    <!-- Аудиоплеер панель -->
+    <div class="music-player-panel">
+        <div class="player-controls">
+            <button id="playPauseBtn" class="player-btn">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="song-info">
+                <span class="song-title" id="currentSong">Наш саундтрек</span>
+                <div class="progress-bar">
+                    <div class="progress" id="musicProgress"></div>
+                </div>
+            </div>
+            <button id="muteBtn" class="player-btn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="volume-slider">
+                <input type="range" min="0" max="100" value="70" id="volumeSlider">
+            </div>
+        </div>
+    </div>
+
+    <!-- Главный контейнер -->
+    <div class="container">
+        <!-- Хедер с анимированным текстом -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="animated-date">14.02.2024</div>
+                <h1 class="main-title">
+                    <span class="title-word title-word-1">VALENTINE</span>
+                    <span class="title-word title-word-2">MUSIC</span>
+                    <span class="title-word title-word-3">ISSUE</span>
+                </h1>
+                <p class="subtitle floating-text">Наша история в песнях и моментах, которые стоят на паузе вечности</p>
+                
+                <!-- Анимированные элементы -->
+                <div class="header-elements">
+                    <div class="pulsing-heart">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="music-note floating">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="vinyl-record spinning">
+                        <i class="fas fa-compact-disc"></i>
+                    </div>
+                </div>
+                
+                <div class="scroll-hint bounce">
+                    <span>Открой нашу историю</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="content-wrapper">
+            <!-- Секция с фотографиями -->
+            <section class="photos-section">
+                <h2 class="section-title"><i class="fas fa-camera-retro"></i> Наши моменты</h2>
+                <div class="photos-grid">
+                    <!-- Фото 1 -->
+                    <div class="photo-item" data-delay="0.1s">
+                        <div class="photo-frame">
+                            <img src="images/photo1.jpg" alt="Наш первый день" class="photo-img grayscale">
+                            <div class="photo-overlay">
+                                <div class="photo-date">01.05.2023</div>
+                                <div class="photo-desc">Тот самый день</div>
+                            </div>
+                            <div class="photo-heart">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Фото 2 -->
+                    <div class="photo-item" data-delay="0.2s">
+                        <div class="photo-frame">
+                            <img src="images/photo2.jpg" alt="Путешествие" class="photo-img grayscale">
+                            <div class="photo-overlay">
+                                <div class="photo-date">15.08.2023</div>
+                                <div class="photo-desc">Дорога домой</div>
+                            </div>
+                            <div class="photo-heart">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Фото 3 -->
+                    <div class="photo-item" data-delay="0.3s">
+                        <div class="photo-frame">
+                            <img src="images/photo3.jpg" alt="Вечер вместе" class="photo-img grayscale">
+                            <div class="photo-overlay">
+                                <div class="photo-date">10.11.2023</div>
+                                <div class="photo-desc">Тихий вечер</div>
+                            </div>
+                            <div class="photo-heart">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Добавьте больше фото по аналогии -->
+                </div>
+            </section>
+
+            <!-- Секция с плейлистом -->
+            <section class="playlist-section">
+                <h2 class="section-title"><i class="fas fa-headphones-alt"></i> Наш саундтрек</h2>
+                <div class="playlist-container">
+                    <!-- Текущий трек -->
+                    <div class="current-track">
+                        <div class="track-cover">
+                            <div class="vinyl spinning">
+                                <i class="fas fa-compact-disc"></i>
+                            </div>
+                        </div>
+                        <div class="track-info">
+                            <h3 id="nowPlaying">Eminem, Rihanna - Love The Way You Lie</h3>
+                            <p class="track-album">Наша тема</p>
+                            <div class="track-progress">
+                                <div class="time-current">0:00</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="trackProgress"></div>
+                                </div>
+                                <div class="time-total">4:23</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Список треков -->
+                    <div class="tracks-list">
+                        <div class="track-item active" data-src="https://music.yandex.ru/album/22790137/track/105328067">
+                            <div class="track-number">01</div>
+                            <div class="track-details">
+                                <div class="track-title">Eminem, Rihanna - Love The Way You Lie</div>
+                                <div class="track-duration">4:23</div>
+                            </div>
+                            <div class="track-play">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="track-item" data-src="https://music.yandex.ru/album/12869177/track/68732614">
+                            <div class="track-number">02</div>
+                            <div class="track-details">
+                                <div class="track-title">The Weeknd - Save Your Tears</div>
+                                <div class="track-duration">3:35</div>
+                            </div>
+                            <div class="track-play">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="track-item" data-src="https://music.yandex.ru/album/221125/track/2307432">
+                            <div class="track-number">03</div>
+                            <div class="track-details">
+                                <div class="track-title">Bruno Mars - Just The Way You Are</div>
+                                <div class="track-duration">3:40</div>
+                            </div>
+                            <div class="track-play">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Добавьте больше треков -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секция с цитатами -->
+            <section class="quotes-section">
+                <h2 class="section-title"><i class="fas fa-quote-right"></i> Наши слова</h2>
+                <div class="quotes-container">
+                    <div class="quote-card floating-card">
+                        <div class="quote-text">"Музыка — это чувства без слов"</div>
+                        <div class="quote-author">— Наше утро</div>
+                    </div>
+                    <div class="quote-card floating-card" data-delay="0.5s">
+                        <div class="quote-text">"Когда играет наша песня, время останавливается"</div>
+                        <div class="quote-author">— Та дорога домой</div>
+                    </div>
+                    <div class="quote-card floating-card" data-delay="1s">
+                        <div class="quote-text">"Любовь — это когда твой плейлист становится нашим плейлистом"</div>
+                        <div class="quote-author">— Наш плейлист</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секция с интерактивным элементом -->
+            <section class="interactive-section">
+                <h2 class="section-title"><i class="fas fa-gift"></i> Твое послание</h2>
+                <div class="interactive-container">
+                    <div class="love-letter">
+                        <div class="letter-content">
+                            <p>Дорогая,</p>
+                            <p>Каждый трек в этом плейлисте — страница нашей истории.</p>
+                            <p>Нажми на сердечко, и я расскажу тебе, почему...</p>
+                        </div>
+                        <div class="letter-heart" id="letterHeart">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="message-box" id="messageBox">
+                        <div class="message-content">
+                            <h3>Потому что...</h3>
+                            <p id="dynamicMessage">Ты делаешь каждую песню особенной, а каждый день — историей.</p>
+                            <button class="close-btn" id="closeMessage">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-heart">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="footer-text">
+                    <p>Создано с бесконечной любовью и одной общей песней в наушниках</p>
+                    <p class="footer-date">14 февраля 2024</p>
+                </div>
+                <div class="footer-player">
+                    <div class="now-playing">
+                        <i class="fas fa-music"></i>
+                        <span>Сейчас играет: <span id="footerSong">Love The Way You Lie</span></span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Подключение скриптов -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="particles.js"></script>
+    <script src="hearts.js"></script>
+    <script src="parallax.js"></script>
+    <script src="music-player.js"></script>
+    
+    <script>
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Автозапуск музыки
+            setTimeout(() => {
+                const audio = document.getElementById('background-music');
+                const playBtn = document.getElementById('playPauseBtn');
+                
+                audio.play().then(() => {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    playBtn.classList.add('playing');
+                }).catch(e => {
+                    console.log("Автовоспроизведение заблокировано, требуется клик");
+                });
+            }, 1000);
+
+            // Анимация сердечка письма
+            document.getElementById('letterHeart').addEventListener('click', function() {
+                this.classList.add('pulse');
+                document.getElementById('messageBox').classList.add('show');
+                
+                // Случайные сообщения
+                const messages = [
+                    "Каждая песня напоминает мне твою улыбку",
+                    "Ты — лучший саундтрек моей жизни",
+                    "Наш плейлист длиннее, чем я думал",
+                    "Ты делаешь музыку красивее",
+                    "Этот сайт — наша музыкальная история"
+                ];
+                
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                document.getElementById('dynamicMessage').textContent = randomMsg;
+                
+                setTimeout(() => this.classList.remove('pulse'), 1000);
+            });
+
+            document.getElementById('closeMessage').addEventListener('click', function() {
+                document.getElementById('messageBox').classList.remove('show');
+            });
+
+            // Анимация фото при наведении
+            document.querySelectorAll('.photo-img').forEach(img => {
+                img.addEventListener('mouseenter', function() {
+                    this.classList.remove('grayscale');
+                    this.parentElement.querySelector('.photo-heart').classList.add('beat');
+                });
+                
+                img.addEventListener('mouseleave', function() {
+                    this.classList.add('grayscale');
+                    this.parentElement.querySelector('.photo-heart').classList.remove('beat');
+                });
+            });
+
+            // Воспроизведение треков из плейлиста
+            document.querySelectorAll('.track-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Убираем активный класс у всех
+                    document.querySelectorAll('.track-item').forEach(i => {
+                        i.classList.remove('active');
+                        i.querySelector('.track-play i').className = 'fas fa-play';
+                    });
+                    
+                    // Добавляем активный класс текущему
+                    this.classList.add('active');
+                    this.querySelector('.track-play i').className = 'fas fa-pause';
+                    
+                    // Обновляем текущий трек
+                    const title = this.querySelector('.track-title').textContent;
+                    document.getElementById('nowPlaying').textContent = title;
+                    document.getElementById('footerSong').textContent = title;
+                    
+                    // Здесь можно добавить реальное воспроизведение
+                    // через audio element
+                });
+            });
+
+            // Анимация заголовка
+            const titleWords = document.querySelectorAll('.title-word');
+            titleWords.forEach((word, index) => {
+                word.style.animationDelay = `${index * 0.3}s`;
+            });
+        });
+
+        // Параллакс эффект для фотографий
+        document.addEventListener('mousemove', function(e) {
+            const photos = document.querySelectorAll('.photo-img');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            photos.forEach(photo => {
+                const speed = 0.01;
+                const x = (mouseX - 0.5) * speed * 100;
+                const y = (mouseY - 0.5) * speed * 100;
+                
+                photo.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+            });
+        });
+    </script>
+</body>
+</html>
