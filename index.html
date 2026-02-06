@@ -12,10 +12,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
 </head>
 <body>
-    <!-- Аудиоплеер (автоматически запускается) -->
+    <!-- Основной аудиоплеер -->
     <audio id="background-music" loop>
-        <source src="https://music.yandex.ru/album/22790137/track/105328067" type="audio/mpeg">
-        <source src="music/background.mp3" type="audio/mpeg">
+        <!-- ИСПРАВЛЕННЫЙ ПУТЬ К МУЗЫКЕ -->
+        <source src="music/t1.m4a" type="audio/mp4">
+        <source src="music/t1.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
     </audio>
 
     <!-- Частицы на фоне -->
@@ -27,27 +29,43 @@
     <!-- Аудиоплеер панель -->
     <div class="music-player-panel">
         <div class="player-controls">
-            <button id="playPauseBtn" class="player-btn">
+            <button id="playPauseBtn" class="player-btn" title="Воспроизведение/Пауза">
                 <i class="fas fa-play"></i>
             </button>
             <div class="song-info">
-                <span class="song-title" id="currentSong">Наш саундтрек</span>
-                <div class="progress-bar">
+                <span class="song-title" id="currentSong">Загрузка музыки...</span>
+                <div class="progress-bar" id="mainProgressBar">
                     <div class="progress" id="musicProgress"></div>
                 </div>
             </div>
-            <button id="muteBtn" class="player-btn">
+            <button id="muteBtn" class="player-btn" title="Выключить звук">
                 <i class="fas fa-volume-up"></i>
             </button>
             <div class="volume-slider">
                 <input type="range" min="0" max="100" value="70" id="volumeSlider">
             </div>
+            <button id="playlistToggle" class="player-btn" title="Плейлист">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Боковая панель плейлиста -->
+    <div class="playlist-sidebar" id="playlistSidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-headphones-alt"></i> Наш плейлист</h3>
+            <button class="close-sidebar" id="closePlaylist">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-tracks">
+            <!-- Треки будут добавлены через JS -->
         </div>
     </div>
 
     <!-- Главный контейнер -->
     <div class="container">
-        <!-- Хедер с анимированным текстом -->
+        <!-- Хедер -->
         <header class="main-header">
             <div class="header-content">
                 <div class="animated-date">14.02.2024</div>
@@ -83,50 +101,8 @@
             <!-- Секция с фотографиями -->
             <section class="photos-section">
                 <h2 class="section-title"><i class="fas fa-camera-retro"></i> Наши моменты</h2>
-                <div class="photos-grid">
-                    <!-- Фото 1 -->
-                    <div class="photo-item" data-delay="0.1s">
-                        <div class="photo-frame">
-                            <img src="images/photo1.jpg" alt="Наш первый день" class="photo-img grayscale">
-                            <div class="photo-overlay">
-                                <div class="photo-date">01.05.2023</div>
-                                <div class="photo-desc">Тот самый день</div>
-                            </div>
-                            <div class="photo-heart">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Фото 2 -->
-                    <div class="photo-item" data-delay="0.2s">
-                        <div class="photo-frame">
-                            <img src="images/photo2.jpg" alt="Путешествие" class="photo-img grayscale">
-                            <div class="photo-overlay">
-                                <div class="photo-date">15.08.2023</div>
-                                <div class="photo-desc">Дорога домой</div>
-                            </div>
-                            <div class="photo-heart">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Фото 3 -->
-                    <div class="photo-item" data-delay="0.3s">
-                        <div class="photo-frame">
-                            <img src="images/photo3.jpg" alt="Вечер вместе" class="photo-img grayscale">
-                            <div class="photo-overlay">
-                                <div class="photo-date">10.11.2023</div>
-                                <div class="photo-desc">Тихий вечер</div>
-                            </div>
-                            <div class="photo-heart">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Добавьте больше фото по аналогии -->
+                <div class="photos-grid" id="photosGrid">
+                    <!-- Фото будут добавлены через JS -->
                 </div>
             </section>
 
@@ -137,59 +113,40 @@
                     <!-- Текущий трек -->
                     <div class="current-track">
                         <div class="track-cover">
-                            <div class="vinyl spinning">
+                            <div class="vinyl spinning" id="vinyl">
                                 <i class="fas fa-compact-disc"></i>
+                            </div>
+                            <div class="cover-image" id="currentCover">
+                                <i class="fas fa-music"></i>
                             </div>
                         </div>
                         <div class="track-info">
-                            <h3 id="nowPlaying">Eminem, Rihanna - Love The Way You Lie</h3>
-                            <p class="track-album">Наша тема</p>
+                            <h3 id="nowPlaying">Выберите трек</h3>
+                            <p class="track-album" id="currentAlbum">Наша тема</p>
                             <div class="track-progress">
-                                <div class="time-current">0:00</div>
+                                <div class="time-current" id="currentTime">0:00</div>
                                 <div class="progress-bar">
                                     <div class="progress" id="trackProgress"></div>
                                 </div>
-                                <div class="time-total">4:23</div>
+                                <div class="time-total" id="totalTime">0:00</div>
+                            </div>
+                            <div class="track-controls">
+                                <button class="control-btn" id="prevTrack" title="Предыдущий">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="control-btn main-control" id="mainPlayPause" title="Воспроизведение">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="control-btn" id="nextTrack" title="Следующий">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Список треков -->
-                    <div class="tracks-list">
-                        <div class="track-item active" data-src="https://music.yandex.ru/album/22790137/track/105328067">
-                            <div class="track-number">01</div>
-                            <div class="track-details">
-                                <div class="track-title">Eminem, Rihanna - Love The Way You Lie</div>
-                                <div class="track-duration">4:23</div>
-                            </div>
-                            <div class="track-play">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item" data-src="https://music.yandex.ru/album/12869177/track/68732614">
-                            <div class="track-number">02</div>
-                            <div class="track-details">
-                                <div class="track-title">The Weeknd - Save Your Tears</div>
-                                <div class="track-duration">3:35</div>
-                            </div>
-                            <div class="track-play">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item" data-src="https://music.yandex.ru/album/221125/track/2307432">
-                            <div class="track-number">03</div>
-                            <div class="track-details">
-                                <div class="track-title">Bruno Mars - Just The Way You Are</div>
-                                <div class="track-duration">3:40</div>
-                            </div>
-                            <div class="track-play">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- Добавьте больше треков -->
+                    <div class="tracks-list" id="tracksList">
+                        <!-- Треки будут добавлены через JS -->
                     </div>
                 </div>
             </section>
@@ -213,7 +170,7 @@
                 </div>
             </section>
 
-            <!-- Секция с интерактивным элементом -->
+            <!-- Интерактивная секция -->
             <section class="interactive-section">
                 <h2 class="section-title"><i class="fas fa-gift"></i> Твое послание</h2>
                 <div class="interactive-container">
@@ -253,7 +210,7 @@
                 <div class="footer-player">
                     <div class="now-playing">
                         <i class="fas fa-music"></i>
-                        <span>Сейчас играет: <span id="footerSong">Love The Way You Lie</span></span>
+                        <span>Сейчас играет: <span id="footerSong">Выберите трек</span></span>
                     </div>
                 </div>
             </div>
@@ -261,7 +218,6 @@
     </div>
 
     <!-- Подключение скриптов -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="particles.js"></script>
     <script src="hearts.js"></script>
@@ -269,102 +225,602 @@
     <script src="music-player.js"></script>
     
     <script>
+        // Данные для фотографий
+        const photosData = [
+            { 
+                filename: 'photo1.jpg', 
+                fallback: 'photo1.jpeg',
+                date: '01.05.2023', 
+                desc: 'Тот самый день' 
+            },
+            { 
+                filename: 'photo2.jpg',
+                fallback: 'photo2.jpeg',
+                date: '15.08.2023', 
+                desc: 'Дорога домой' 
+            },
+            { 
+                filename: 'photo3.jpg',
+                fallback: 'photo3.jpeg',
+                date: '10.11.2023', 
+                desc: 'Тихий вечер' 
+            },
+            { 
+                filename: 'photo4.jpg',
+                fallback: 'photo4.jpeg',
+                date: '25.12.2023', 
+                desc: 'Праздничный вечер' 
+            },
+            { 
+                filename: 'photo5.jpg',
+                fallback: 'photo5.jpeg',
+                date: '01.01.2024', 
+                desc: 'Новый год вместе' 
+            },
+            { 
+                filename: 'photo6.jpg',
+                fallback: 'photo6.jpeg',
+                date: '14.02.2024', 
+                desc: 'Наше 14 февраля' 
+            }
+        ];
+
+        // Данные для треков
+        const tracksData = [
+            {
+                title: 'Наша песня #1',
+                album: 'Трек из нашей истории',
+                duration: 180,
+                color: '#ff6b8b'
+            },
+            {
+                title: 'Наша песня #2',
+                album: 'Вторая тема',
+                duration: 200,
+                color: '#6b8bff'
+            },
+            {
+                title: 'Наша песня #3',
+                album: 'Третья тема',
+                duration: 220,
+                color: '#ff8e6b'
+            },
+            {
+                title: 'Наша песня #4',
+                album: 'Четвертая тема',
+                duration: 190,
+                color: '#6bff8e'
+            },
+            {
+                title: 'Наша песня #5',
+                album: 'Пятая тема',
+                duration: 210,
+                color: '#ff6bd6'
+            }
+        ];
+
+        // Функция для проверки существования файла
+        function checkFileExists(url) {
+            return new Promise((resolve) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('HEAD', url, true);
+                xhr.onload = function() {
+                    resolve(xhr.status === 200);
+                };
+                xhr.onerror = function() {
+                    resolve(false);
+                };
+                xhr.send();
+            });
+        }
+
+        // Генерация фотографий с проверкой
+        async function generatePhotos() {
+            const grid = document.getElementById('photosGrid');
+            grid.innerHTML = '';
+            
+            let loadedCount = 0;
+            
+            for (let i = 0; i < photosData.length; i++) {
+                const photo = photosData[i];
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item animate-on-scroll';
+                photoItem.style.animationDelay = `${i * 0.1}s`;
+                
+                // Пробуем загрузить фото
+                const photoUrl = `images/${photo.filename}`;
+                const fallbackUrl = `images/${photo.fallback}`;
+                
+                let finalUrl = photoUrl;
+                
+                // Проверяем основное фото
+                const exists = await checkFileExists(photoUrl);
+                if (!exists) {
+                    // Пробуем fallback
+                    const fallbackExists = await checkFileExists(fallbackUrl);
+                    if (fallbackExists) {
+                        finalUrl = fallbackUrl;
+                    } else {
+                        // Создаем заглушку
+                        finalUrl = createPlaceholderSVG(i, photo.desc);
+                    }
+                }
+                
+                photoItem.innerHTML = `
+                    <div class="photo-frame">
+                        <img src="${finalUrl}" 
+                             alt="${photo.desc}" 
+                             class="photo-img grayscale"
+                             loading="lazy"
+                             onerror="this.src='${createPlaceholderSVG(i, photo.desc)}'">
+                        <div class="photo-overlay">
+                            <div class="photo-date">${photo.date}</div>
+                            <div class="photo-desc">${photo.desc}</div>
+                        </div>
+                        <div class="photo-heart">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(photoItem);
+                loadedCount++;
+                
+                // Добавляем обработчики событий
+                setTimeout(() => {
+                    const img = photoItem.querySelector('.photo-img');
+                    const heart = photoItem.querySelector('.photo-heart');
+                    const frame = photoItem.querySelector('.photo-frame');
+                    
+                    if (img && heart && frame) {
+                        frame.addEventListener('mouseenter', function() {
+                            img.classList.remove('grayscale');
+                            heart.classList.add('beat');
+                        });
+                        
+                        frame.addEventListener('mouseleave', function() {
+                            img.classList.add('grayscale');
+                            heart.classList.remove('beat');
+                        });
+                        
+                        // Клик на фото для увеличения
+                        frame.addEventListener('click', function() {
+                            showPhotoModal(finalUrl, photo.desc, photo.date);
+                        });
+                    }
+                }, 100);
+            }
+            
+            // Если ни одно фото не загрузилось
+            if (loadedCount === 0) {
+                console.log('Фотографии не найдены в папке images/');
+                showPhotoHelp();
+            }
+        }
+
+        // Создание SVG-заглушки для фото
+        function createPlaceholderSVG(index, description) {
+            const colors = ['#ff6b8b', '#6b8bff', '#ff8e6b', '#6bff8e', '#ff6bd6'];
+            const color = colors[index % colors.length];
+            
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+                <rect width="400" height="400" fill="%23202b63"/>
+                <rect x="50" y="50" width="300" height="300" rx="15" fill="%23302b63" stroke="${color.replace('#', '%23')}" stroke-width="3"/>
+                <circle cx="200" cy="150" r="60" fill="${color.replace('#', '%23')}30" stroke="${color.replace('#', '%23')}" stroke-width="2"/>
+                <text x="200" y="150" font-family="Arial" font-size="48" fill="${color.replace('#', '%23')}" text-anchor="middle" dy=".3em">
+                    <tspan>${index + 1}</tspan>
+                </text>
+                <text x="200" y="250" font-family="Arial" font-size="18" fill="white" text-anchor="middle" dy=".3em">
+                    ${encodeURIComponent(description)}
+                </text>
+                <text x="200" y="280" font-family="Arial" font-size="14" fill="%23ff8e6b" text-anchor="middle" dy=".3em">
+                    Добавь фото в images/
+                </text>
+            </svg>`;
+        }
+
+        // Показ подсказки по фото
+        function showPhotoHelp() {
+            const helpDiv = document.createElement('div');
+            helpDiv.style.cssText = `
+                background: rgba(255, 107, 139, 0.1);
+                border: 2px dashed rgba(255, 107, 139, 0.5);
+                border-radius: 15px;
+                padding: 25px;
+                margin: 20px 0;
+                text-align: center;
+                color: white;
+            `;
+            
+            helpDiv.innerHTML = `
+                <h3 style="color: #ff8e6b; margin-bottom: 15px;">
+                    <i class="fas fa-images"></i> Как добавить фотографии?
+                </h3>
+                <p style="margin-bottom: 10px;">1. Создай папку <strong>images</strong> в той же папке, где index.html</p>
+                <p style="margin-bottom: 10px;">2. Добавь туда свои фотографии с именами:</p>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0;">
+                    <code style="background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 5px;">photo1.jpg</code>
+                    <code style="background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 5px;">photo2.jpg</code>
+                    <code style="background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 5px;">photo3.jpg</code>
+                </div>
+                <p style="margin-bottom: 15px;">3. Можно использовать .jpeg, .png, .webp форматы</p>
+                <p style="color: #ff8e6b; font-size: 14px;">
+                    <i class="fas fa-sync-alt"></i> Страница обновится автоматически
+                </p>
+            `;
+            
+            const grid = document.getElementById('photosGrid');
+            grid.parentNode.insertBefore(helpDiv, grid);
+        }
+
+        // Модальное окно для фото
+        function showPhotoModal(src, desc, date) {
+            const modal = document.createElement('div');
+            modal.className = 'photo-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(15, 12, 41, 0.95);
+                z-index: 2000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                animation: fadeIn 0.3s forwards;
+            `;
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="
+                    position: relative;
+                    max-width: 90%;
+                    max-height: 90%;
+                    background: rgba(20, 17, 47, 0.9);
+                    border-radius: 20px;
+                    padding: 20px;
+                    border: 1px solid rgba(255, 107, 139, 0.3);
+                ">
+                    <button class="modal-close" style="
+                        position: absolute;
+                        top: 15px;
+                        right: 15px;
+                        background: rgba(255, 107, 139, 0.2);
+                        border: none;
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        font-size: 20px;
+                        cursor: pointer;
+                        z-index: 10;
+                    ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div style="
+                        max-height: 70vh;
+                        overflow: hidden;
+                        border-radius: 15px;
+                        margin-bottom: 15px;
+                    ">
+                        <img src="${src}" 
+                             alt="${desc}" 
+                             style="
+                                width: 100%;
+                                height: auto;
+                                display: block;
+                                border-radius: 10px;
+                             "
+                             onerror="this.src='${createPlaceholderSVG(0, desc)}'">
+                    </div>
+                    <div style="
+                        padding: 15px;
+                        text-align: center;
+                        color: white;
+                    ">
+                        <div style="color: #ff8e6b; font-size: 16px; margin-bottom: 5px;">${date}</div>
+                        <div style="font-size: 18px; font-weight: 500;">${desc}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Закрытие по клику на крестик или фон
+            const closeBtn = modal.querySelector('.modal-close');
+            closeBtn.addEventListener('click', () => {
+                modal.style.animation = 'fadeOut 0.3s forwards';
+                setTimeout(() => {
+                    if (modal.parentNode) modal.parentNode.removeChild(modal);
+                }, 300);
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.animation = 'fadeOut 0.3s forwards';
+                    setTimeout(() => {
+                        if (modal.parentNode) modal.parentNode.removeChild(modal);
+                    }, 300);
+                }
+            });
+            
+            // Добавляем стили для анимации
+            if (!document.querySelector('#modal-styles')) {
+                const style = document.createElement('style');
+                style.id = 'modal-styles';
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Генерация треков
+        function generateTracks() {
+            const tracksList = document.getElementById('tracksList');
+            const sidebarTracks = document.querySelector('.sidebar-tracks');
+            
+            tracksList.innerHTML = '';
+            sidebarTracks.innerHTML = '';
+            
+            tracksData.forEach((track, index) => {
+                // Для главного списка
+                const trackItem = document.createElement('div');
+                trackItem.className = 'track-item';
+                trackItem.dataset.index = index;
+                
+                trackItem.innerHTML = `
+                    <div class="track-number">${(index + 1).toString().padStart(2, '0')}</div>
+                    <div class="track-details">
+                        <div class="track-title">${track.title}</div>
+                        <div class="track-album-small">${track.album}</div>
+                        <div class="track-duration">${formatTime(track.duration)}</div>
+                    </div>
+                    <div class="track-play">
+                        <i class="fas fa-play"></i>
+                    </div>
+                `;
+                
+                tracksList.appendChild(trackItem);
+                
+                // Для сайдбара
+                const sidebarItem = trackItem.cloneNode(true);
+                sidebarTracks.appendChild(sidebarItem);
+            });
+        }
+
+        // Форматирование времени
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Проверка музыки
+        function checkMusic() {
+            const audio = document.getElementById('background-music');
+            const musicPath = 'music/t1.m4a';
+            
+            console.log('Проверяем музыку по пути:', musicPath);
+            
+            checkFileExists(musicPath).then(exists => {
+                if (!exists) {
+                    console.warn('Файл музыки не найден:', musicPath);
+                    showMusicHelp();
+                } else {
+                    console.log('Музыка найдена!');
+                    
+                    // Запускаем попытку воспроизведения через 1 секунду
+                    setTimeout(() => {
+                        const playPromise = audio.play();
+                        
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                console.log('Автовоспроизведение успешно!');
+                                updateMusicStatus('Музыка играет!');
+                            }).catch(error => {
+                                console.log('Автовоспроизведение заблокировано. Нажмите на кнопку воспроизведения.');
+                                updateMusicStatus('Нажмите ▶ для запуска');
+                            });
+                        }
+                    }, 1000);
+                }
+            });
+        }
+
+        // Показ подсказки по музыке
+        function showMusicHelp() {
+            const musicHelp = document.createElement('div');
+            musicHelp.style.cssText = `
+                background: rgba(107, 139, 255, 0.1);
+                border: 2px dashed rgba(107, 139, 255, 0.5);
+                border-radius: 15px;
+                padding: 20px;
+                margin: 30px auto;
+                max-width: 600px;
+                text-align: center;
+                color: white;
+            `;
+            
+            musicHelp.innerHTML = `
+                <h3 style="color: #6b8bff; margin-bottom: 15px;">
+                    <i class="fas fa-music"></i> Музыка не найдена
+                </h3>
+                <p style="margin-bottom: 10px;">1. Создай папку <strong>music</strong> в той же папке, где index.html</p>
+                <p style="margin-bottom: 10px;">2. Добавь туда музыку с именем <code style="background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 3px;">t1.m4a</code></p>
+                <p style="margin-bottom: 15px;">3. Можно использовать .mp3, .ogg форматы</p>
+                <div style="color: #ff8e6b; font-size: 14px;">
+                    <i class="fas fa-exclamation-circle"></i> Без музыки сайт все равно будет работать
+                </div>
+            `;
+            
+            const playlistSection = document.querySelector('.playlist-section');
+            playlistSection.parentNode.insertBefore(musicHelp, playlistSection);
+        }
+
+        // Обновление статуса музыки
+        function updateMusicStatus(status) {
+            const statusElement = document.getElementById('currentSong');
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+        }
+
         // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            // Автозапуск музыки
-            setTimeout(() => {
-                const audio = document.getElementById('background-music');
-                const playBtn = document.getElementById('playPauseBtn');
-                
-                audio.play().then(() => {
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    playBtn.classList.add('playing');
-                }).catch(e => {
-                    console.log("Автовоспроизведение заблокировано, требуется клик");
-                });
-            }, 1000);
-
-            // Анимация сердечка письма
-            document.getElementById('letterHeart').addEventListener('click', function() {
-                this.classList.add('pulse');
-                document.getElementById('messageBox').classList.add('show');
-                
-                // Случайные сообщения
-                const messages = [
-                    "Каждая песня напоминает мне твою улыбку",
-                    "Ты — лучший саундтрек моей жизни",
-                    "Наш плейлист длиннее, чем я думал",
-                    "Ты делаешь музыку красивее",
-                    "Этот сайт — наша музыкальная история"
-                ];
-                
-                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-                document.getElementById('dynamicMessage').textContent = randomMsg;
-                
-                setTimeout(() => this.classList.remove('pulse'), 1000);
-            });
-
-            document.getElementById('closeMessage').addEventListener('click', function() {
-                document.getElementById('messageBox').classList.remove('show');
-            });
-
-            // Анимация фото при наведении
-            document.querySelectorAll('.photo-img').forEach(img => {
-                img.addEventListener('mouseenter', function() {
-                    this.classList.remove('grayscale');
-                    this.parentElement.querySelector('.photo-heart').classList.add('beat');
-                });
-                
-                img.addEventListener('mouseleave', function() {
-                    this.classList.add('grayscale');
-                    this.parentElement.querySelector('.photo-heart').classList.remove('beat');
-                });
-            });
-
-            // Воспроизведение треков из плейлиста
-            document.querySelectorAll('.track-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    // Убираем активный класс у всех
-                    document.querySelectorAll('.track-item').forEach(i => {
-                        i.classList.remove('active');
-                        i.querySelector('.track-play i').className = 'fas fa-play';
-                    });
-                    
-                    // Добавляем активный класс текущему
-                    this.classList.add('active');
-                    this.querySelector('.track-play i').className = 'fas fa-pause';
-                    
-                    // Обновляем текущий трек
-                    const title = this.querySelector('.track-title').textContent;
-                    document.getElementById('nowPlaying').textContent = title;
-                    document.getElementById('footerSong').textContent = title;
-                    
-                    // Здесь можно добавить реальное воспроизведение
-                    // через audio element
-                });
-            });
-
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Начинаем инициализацию...');
+            
+            // Генерация контента
+            await generatePhotos();
+            generateTracks();
+            checkMusic();
+            
             // Анимация заголовка
             const titleWords = document.querySelectorAll('.title-word');
             titleWords.forEach((word, index) => {
                 word.style.animationDelay = `${index * 0.3}s`;
             });
+
+            // Открытие/закрытие плейлиста
+            document.getElementById('playlistToggle').addEventListener('click', function() {
+                document.getElementById('playlistSidebar').classList.toggle('open');
+            });
+
+            document.getElementById('closePlaylist').addEventListener('click', function() {
+                document.getElementById('playlistSidebar').classList.remove('open');
+            });
+
+            // Интерактивное сердечко
+            const letterHeart = document.getElementById('letterHeart');
+            const messageBox = document.getElementById('messageBox');
+            
+            letterHeart.addEventListener('click', function() {
+                this.classList.add('pulse');
+                
+                const messages = [
+                    "Каждая песня напоминает мне твою улыбку",
+                    "Ты — лучший саундтрек моей жизни",
+                    "Наш плейлист длиннее, чем я думал",
+                    "Ты делаешь музыку красивее",
+                    "Этот сайт — наша музыкальная история",
+                    "Твой смех — моя любимая мелодия",
+                    "Мы как идеальная гармония",
+                    "Любовь — это наш главный хит"
+                ];
+                
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                document.getElementById('dynamicMessage').textContent = randomMsg;
+                
+                messageBox.classList.add('show');
+                
+                setTimeout(() => this.classList.remove('pulse'), 1000);
+            });
+
+            document.getElementById('closeMessage').addEventListener('click', function() {
+                messageBox.classList.remove('show');
+            });
+
+            // Клик по фону закрывает сообщение
+            messageBox.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+
+            // Добавляем обработчики для треков
+            setTimeout(() => {
+                document.querySelectorAll('.track-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        if (window.musicPlayer && window.musicPlayer.playTrack) {
+                            window.musicPlayer.playTrack(index);
+                        }
+                    });
+                });
+            }, 500);
+
+            console.log('Инициализация завершена!');
         });
 
-        // Параллакс эффект для фотографий
-        document.addEventListener('mousemove', function(e) {
-            const photos = document.querySelectorAll('.photo-img');
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
+        // Автообновление при изменении файлов
+        if (window.location.href.includes('file://')) {
+            console.log('Локальный режим: включено автообновление фото');
             
-            photos.forEach(photo => {
-                const speed = 0.01;
-                const x = (mouseX - 0.5) * speed * 100;
-                const y = (mouseY - 0.5) * speed * 100;
+            // Слушаем изменения в папке images
+            setInterval(async () => {
+                const oldCount = document.querySelectorAll('.photo-item').length;
+                await generatePhotos();
+                const newCount = document.querySelectorAll('.photo-item').length;
                 
-                photo.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
-            });
-        });
+                if (newCount > oldCount) {
+                    console.log('Обнаружены новые фото!');
+                }
+            }, 3000);
+        }
     </script>
+
+    <style>
+        /* Дополнительные стили для исправлений */
+        .photo-modal .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Стили для загрузки */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f0c29;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-heart {
+            font-size: 4rem;
+            color: #ff6b8b;
+            animation: pulse 1.5s infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            color: #ff8e6b;
+            font-size: 1.2rem;
+        }
+        
+        /* Анимация пульсации для кнопок */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
 </body>
 </html>
