@@ -3,9 +3,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('💫 Запускаем нашу историю...');
     
-    // Константы
-    const START_DATE = new Date('2025-08-30');
-    const TODAY = new Date();
+    // ВАШИ РЕАЛЬНЫЕ ДАТЫ
+    const FIRST_CONTACT = new Date('2025-08-06'); // 6 августа - первое общение
+    const FIRST_WALK = new Date('2025-08-26');    // 26 августа - первая прогулка
+    const FIRST_BOUQUET = new Date('2025-08-26'); // 26 августа - первый букет
+    const SECOND_MEETING = new Date('2025-08-27'); // 27 августа - вторая встреча
+    const RELATIONSHIP_START = new Date('2025-08-30'); // 30 августа - начало отношений
+    const FIRST_BREAKFAST = new Date('2025-09-07'); // 7 сентября - завтрак в Астере
+    const FIRST_SERIOUS_TALK = new Date('2025-09-11'); // 11 сентября - первый серьезный разговор
+    const TODAY = new Date(); // Текущая дата
     
     // Элементы
     const elements = {
@@ -93,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             src: "music/t5.m4a",
             title: "attachment",
-            artist: "Лlove",
+            artist: "love",
             color: "#ff6bd6",
             duration: 225
         },
@@ -109,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Инициализация
     async function init() {
         try {
-            // 1. Создаем романтичный фон с созвездиями
+            // 1. Создаем романтичный фон
             createRomanticBackground();
             
             // 2. Рассчитываем даты
@@ -147,23 +153,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = elements.romanticBackground.querySelector('.constellation-container');
         const stars = elements.romanticBackground.querySelector('.twinkling-stars');
         
-        // Создаем созвездия (группы звезд с линиями)
         createConstellations(container);
-        
-        // Создаем мерцающие звезды
         createTwinklingStars(stars);
-        
-        // Анимация луны
         createMoonAnimation();
     }
     
-    // Создание созвездий
+    // Создание созвездий (без изменений)
     function createConstellations(container) {
         if (!container) return;
         
-        // Определения созвездий в виде сердечек
         const constellations = [
-            // Большое сердце
             {
                 stars: [
                     { x: 20, y: 30, size: 3 },
@@ -174,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 ],
                 connections: [[0,1], [1,2], [2,3], [3,4], [4,0]]
             },
-            // Маленькое сердце
             {
                 stars: [
                     { x: 70, y: 60, size: 2 },
@@ -185,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 ],
                 connections: [[0,1], [1,2], [2,3], [3,4], [4,0]]
             },
-            // Звездный путь
             {
                 stars: [
                     { x: 10, y: 80, size: 2 },
@@ -198,10 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         ];
         
-        // Создаем созвездия
-        constellations.forEach((constellation, index) => {
-            // Создаем звезды
-            constellation.stars.forEach((star, starIndex) => {
+        constellations.forEach(constellation => {
+            constellation.stars.forEach(star => {
                 const starEl = document.createElement('div');
                 starEl.className = 'constellation-star';
                 starEl.style.cssText = `
@@ -220,13 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 appData.backgroundElements.push(starEl);
             });
             
-            // Создаем линии соединения
             constellation.connections.forEach(connection => {
                 const [start, end] = connection;
                 const startStar = constellation.stars[start];
                 const endStar = constellation.stars[end];
                 
-                // Рассчитываем длину и угол линии
                 const dx = endStar.x - startStar.x;
                 const dy = endStar.y - startStar.y;
                 const length = Math.sqrt(dx * dx + dy * dy);
@@ -254,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Добавляем несколько случайных звезд
         for (let i = 0; i < 20; i++) {
             const starEl = document.createElement('div');
             const size = Math.random() * 2 + 1;
@@ -279,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Создание мерцающих звезд
     function createTwinklingStars(container) {
         if (!container) return;
         
@@ -309,7 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Создание анимации луны
     function createMoonAnimation() {
         const moon = elements.romanticBackground.querySelector('.moon');
         if (!moon) return;
@@ -335,29 +325,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupMainMessage() {
         if (!elements.mainMessage) return;
         
-        // Показываем сообщение при загрузке
         elements.mainMessage.classList.add('active');
         
-        // Скрываем сообщение при скролле
         let scrollTimeout;
         window.addEventListener('scroll', () => {
             elements.mainMessage.classList.remove('active');
             
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
-                // Показываем снова если не скроллили 3 секунды
                 if (window.scrollY < 100) {
                     elements.mainMessage.classList.add('active');
                 }
             }, 3000);
         });
         
-        // Скрытие по клику
         elements.mainMessage.addEventListener('click', () => {
             elements.mainMessage.classList.remove('active');
         });
         
-        // Анимация сердца в сообщении
         const heart = elements.mainMessage.querySelector('.message-heart');
         if (heart) {
             setInterval(() => {
@@ -369,9 +354,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Рассчет дат
+    // Рассчет дат с вашими реальными событиями
     function calculateDates() {
-        const diffTime = Math.abs(TODAY - START_DATE);
+        // Дни с начала отношений (30 августа)
+        const diffTime = Math.abs(TODAY - RELATIONSHIP_START);
         appData.daysTogether = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -450,12 +436,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'лет';
     }
     
-    // Загрузка фотографий
+    // Загрузка фотографий - ИСПРАВЛЕНО!
     async function loadPhotos() {
         console.log('🖼️ Ищем фотографии...');
         
         if (elements.loadingText) {
-            elements.loadingText.textContent = 'Ищем ваши фотографии...';
+            elements.loadingText.textContent = 'Загружаем фотографии...';
         }
         
         const foundPhotos = await findPhotos();
@@ -464,9 +450,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (foundPhotos.length > 0) {
             renderPhotos(foundPhotos);
             console.log(`✅ Найдено ${foundPhotos.length} фотографий`);
+            
+            // Убираем сообщение о загрузке фото
+            if (elements.photosInfo) {
+                elements.photosInfo.style.display = 'none';
+            }
         } else {
-            showNoPhotosMessage();
+            // Тихо показываем что фото нет, без назойливых сообщений
             console.log('ℹ️ Фотографии не найдены');
+            if (elements.photosGrid) {
+                elements.photosGrid.innerHTML = '<div class="photos-placeholder"></div>';
+            }
+            if (elements.photosInfo) {
+                elements.photosInfo.style.display = 'none';
+            }
         }
     }
     
@@ -474,27 +471,41 @@ document.addEventListener('DOMContentLoaded', function() {
     async function findPhotos() {
         const photos = [];
         const photoNames = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5', 'photo6'];
-        const formats = ['.jpg', '.jpeg', '.png', '.webp'];
+        const formats = ['.jpg', '.jpeg', '.png', '.webp', '.JPG', '.JPEG', '.PNG'];
+        
+        // ВАШИ РЕАЛЬНЫЕ ДАТЫ для фото
+        const photoDates = [
+            '26 августа 2025 - Первая прогулка в бутербродную',
+            '26 августа 2025 - Первый букет цветов',
+            '27 августа 2025 - Наша вторая встреча',
+            '30 августа 2025 - Начало отношений в ресторане',
+            '7 сентября 2025 - Завтрак в Астере',
+            '11 сентября 2025 - Прогулка по парку'
+        ];
+        
+        const photoDescs = [
+            'Пошли нямать в бутербродную первый раз',
+            'Первый букет, подаренный с любовью',
+            'Ни секунды не мог без клеш рояля',
+            'Красивый ресторан, где все началось',
+            'Вкусный завтрак в Астере',
+            'Первый разговор о проблемах'
+        ];
         
         for (let i = 0; i < photoNames.length; i++) {
             const photoName = photoNames[i];
-            let foundPhoto = null;
             
             for (const format of formats) {
                 const path = `images/${photoName}${format}`;
                 if (await fileExists(path)) {
-                    foundPhoto = {
+                    photos.push({
                         src: path,
                         index: i + 1,
-                        date: generatePhotoDate(i),
-                        desc: getPhotoDescription(i)
-                    };
+                        date: photoDates[i] || `Наш день ${i+1}`,
+                        desc: photoDescs[i] || 'Наш прекрасный момент'
+                    });
                     break;
                 }
-            }
-            
-            if (foundPhoto) {
-                photos.push(foundPhoto);
             }
         }
         
@@ -506,39 +517,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Promise((resolve) => {
             const xhr = new XMLHttpRequest();
             xhr.open('HEAD', url, true);
+            xhr.timeout = 2000;
             xhr.onload = () => resolve(xhr.status === 200);
             xhr.onerror = () => resolve(false);
+            xhr.ontimeout = () => resolve(false);
             xhr.send();
         });
     }
     
-    // Генерация даты для фото
-    function generatePhotoDate(index) {
-        const dates = [
-            '30.08.2025 - Наше начало',
-            '15.09.2025 - Первое свидание',
-            '01.10.2025 - Осенняя прогулка',
-            '20.10.2025 - Вечер разговоров',
-            '05.11.2025 - Дождливый день',
-            '25.12.2025 - Первое Рождество'
-        ];
-        return dates[index] || 'Наш день';
-    }
-    
-    // Описание для фото
-    function getPhotoDescription(index) {
-        const descriptions = [
-            'Тот самый день, когда всё началось',
-            'Помнишь наше первое свидание?',
-            'Прогулка, которая изменила всё',
-            'Вечер, когда мы говорили обо всём',
-            'Даже дождь не испортил настроение',
-            'Наш первый праздник вместе'
-        ];
-        return descriptions[index] || 'Наш прекрасный момент';
-    }
-    
-    // Рендер фотографий
+    // Рендер фотографий - УБРАЛ #1, #2 и сообщение о загрузке
     function renderPhotos(photos) {
         if (elements.photosCount) {
             elements.photosCount.textContent = `${photos.length} фотографий`;
@@ -565,28 +552,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Создание элемента фото
+    // Создание элемента фото - УБРАЛ #1, #2
     function createPhotoElement(photo, index) {
         const div = document.createElement('div');
         div.className = 'photo-item';
         div.dataset.index = index;
-        div.innerHTML = createPhotoHTML(photo, index);
         
-        div.addEventListener('click', () => openPhotoModal(photo));
-        
-        return div;
-    }
-    
-    // HTML для фото
-    function createPhotoHTML(photo, index) {
-        return `
+        div.innerHTML = `
             <div class="photo-wrapper">
                 <div class="photo-frame">
                     <img src="${photo.src}" 
                          alt="${photo.desc}"
                          class="photo-image"
                          loading="lazy"
-                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"300\"><rect width=\"400\" height=\"300\" fill=\"%23202b63\"/><text x=\"200\" y=\"150\" font-family=\"Arial\" font-size=\"20\" fill=\"%23ff6b8b\" text-anchor=\"middle\" dy=\".3em\">Фото ${index + 1}</text></svg>'">
+                         onerror="this.style.display='none'">
                     <div class="photo-overlay">
                         <div class="photo-date">${photo.date.split(' - ')[0]}</div>
                         <div class="photo-desc">${photo.desc}</div>
@@ -595,14 +574,39 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-heart"></i>
                     </div>
                 </div>
-                <div class="photo-number">#${index + 1}</div>
+            </div>
+        `;
+        
+        div.addEventListener('click', () => openPhotoModal(photo));
+        
+        return div;
+    }
+    
+    // HTML для фото - УБРАЛ photo-number
+    function createPhotoHTML(photo, index) {
+        return `
+            <div class="photo-wrapper">
+                <div class="photo-frame">
+                    <img src="${photo.src}" 
+                         alt="${photo.desc}"
+                         class="photo-image"
+                         loading="lazy"
+                         onerror="this.style.display='none'">
+                    <div class="photo-overlay">
+                        <div class="photo-date">${photo.date.split(' - ')[0]}</div>
+                        <div class="photo-desc">${photo.desc}</div>
+                    </div>
+                    <div class="photo-heart">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
             </div>
         `;
     }
     
     // Инициализация Swiper
     function initSwiper() {
-        if (typeof Swiper !== 'undefined' && elements.photosSwiperWrapper.children.length > 0) {
+        if (typeof Swiper !== 'undefined' && elements.photosSwiperWrapper && elements.photosSwiperWrapper.children.length > 0) {
             appData.swiper = new Swiper('.photos-swiper', {
                 loop: true,
                 pagination: {
@@ -610,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     clickable: true,
                 },
                 autoplay: {
-                    delay: 5000,
+                    delay: 4000,
                     disableOnInteraction: false,
                 },
                 effect: 'fade',
@@ -627,34 +631,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     768: {
                         slidesPerView: 1,
-                        spaceBetween: 20,
-                        autoplay: {
-                            delay: 4000
-                        }
+                        spaceBetween: 20
                     }
                 }
             });
-        }
-    }
-    
-    // Сообщение если нет фото
-    function showNoPhotosMessage() {
-        if (elements.photosGrid) {
-            elements.photosGrid.innerHTML = `
-                <div class="no-photos-message">
-                    <div class="no-photos-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <h3>Добавьте ваши фотографии</h3>
-                    <p>Создайте папку <strong>images</strong> и добавьте туда:</p>
-                    <div class="photo-examples">
-                        <div class="photo-example">photo1.jpg</div>
-                        <div class="photo-example">photo2.jpg</div>
-                        <div class="photo-example">photo3.jpg</div>
-                    </div>
-                    <p class="hint">Страница обновится автоматически</p>
-                </div>
-            `;
         }
     }
     
@@ -792,7 +772,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Воспроизведение
     function play() {
         appData.audio.play().then(() => {
             appData.isPlaying = true;
@@ -805,7 +784,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Пауза
     function pause() {
         appData.audio.pause();
         appData.isPlaying = false;
@@ -813,7 +791,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.vinyl) elements.vinyl.classList.remove('playing');
     }
     
-    // Переключение воспроизведения
     function togglePlay() {
         if (appData.isPlaying) {
             pause();
@@ -822,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Обновление кнопки play
     function updatePlayButton() {
         const icon = elements.playBtn.querySelector('i');
         if (icon) {
@@ -831,7 +807,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTracksList();
     }
     
-    // Следующий трек
     function nextTrack() {
         let newIndex = appData.currentTrack + 1;
         if (newIndex >= tracks.length) newIndex = 0;
@@ -839,7 +814,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (appData.isPlaying) play();
     }
     
-    // Предыдущий трек
     function prevTrack() {
         let newIndex = appData.currentTrack - 1;
         if (newIndex < 0) newIndex = tracks.length - 1;
@@ -847,7 +821,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (appData.isPlaying) play();
     }
     
-    // Обновление прогресса
     function updateProgress() {
         if (appData.audio.duration) {
             const progress = (appData.audio.currentTime / appData.audio.duration) * 100;
@@ -860,14 +833,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Обновление длительности
     function updateDuration() {
         if (appData.audio.duration && elements.timeTotal) {
             elements.timeTotal.textContent = formatTime(appData.audio.duration);
         }
     }
     
-    // Перемотка
     function seek(e) {
         const rect = elements.progressBar.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
@@ -876,7 +847,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Форматирование времени
     function formatTime(seconds) {
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
@@ -888,13 +858,12 @@ document.addEventListener('DOMContentLoaded', function() {
         initMobileMenu();
         initPlaylistButton();
         initMessages();
-        initMemories();
+        initMemories(); // Важно: теперь использует реальные даты
         initPhotoModal();
         initHeartButton();
         initScrollAnimations();
     }
     
-    // Мобильное меню
     function initMobileMenu() {
         const menuBtn = document.getElementById('mobileMenuBtn');
         const menu = document.getElementById('mobileMenu');
@@ -921,7 +890,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Кнопка плейлиста
     function initPlaylistButton() {
         const btn = document.getElementById('playlistBtn');
         const modal = document.getElementById('playlistModal');
@@ -970,6 +938,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // ВАШИ РЕАЛЬНЫЕ СООБЩЕНИЯ
     function generateMessages() {
         return [
             { text: "я вроде написал в той приложухе тебе но с лагами там капец", time: "22:30", type: "you" },
@@ -979,18 +948,19 @@ document.addEventListener('DOMContentLoaded', function() {
             { text: "да, согласен. я никогда не использовал это приложение", time: "23:20", type: "you" },
             { text: "правильно сделал", time: "23:35", type: "me" },
             { text: "анкета конечно привелка внимание, инста добавила", time: "23:40", type: "you" },
-            { text: "спс (я скинуоа стикер с ланой)", time: "23:42", type: "me" }
+            { text: "спс (я скинула стикер с ланой)", time: "23:42", type: "me" }
         ];
     }
     
     function generateMemoryCards() {
         return [
-            { date: "30.08.2025", text: "День, когда всё началось" },
-            { date: "Первая неделя", text: "Нескончаемые разговоры" },
-            { date: "Осень 2025", text: "Прогулки под дождём" },
-            { date: "Первое свидание", text: "Нервы и счастье" },
-            { date: "Совместные планы", text: "Мечты о будущем" },
-            { date: "Каждый день", text: "Счастье быть вместе" }
+            { date: "6 августа 2025", text: "Первое общение (ты еще не знаешь об этом)" },
+            { date: "26 августа 2025", text: "Первая прогулка - пошли нямать в бутербродную" },
+            { date: "26 августа 2025", text: "Первый букет цветов" },
+            { date: "27 августа 2025", text: "Вторая встреча - ни секунды без клеш рояля" },
+            { date: "30 августа 2025", text: "Начало отношений в красивом ресторане" },
+            { date: "7 сентября 2025", text: "Вкусный завтрак в Астере" },
+            { date: "11 сентября 2025", text: "Прогулка по парку и первый серьезный разговор" }
         ];
     }
     
@@ -1046,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Воспоминания
+    // Воспоминания с ВАШИМИ РЕАЛЬНЫМИ ДАТАМИ
     function initMemories() {
         if (elements.timeline) {
             const memories = generateMemories();
@@ -1062,49 +1032,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // ВАШИ РЕАЛЬНЫЕ ВОСПОМИНАНИЯ
     function generateMemories() {
-        const start = new Date(START_DATE);
-        const memories = [];
-        
-        memories.push({
-            date: "30 августа 2025",
-            text: "Начало нашей истории"
-        });
-        
-        const monthNames = ['Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', 'Январь', 'Февраль'];
-        let currentDate = new Date(start);
-        
-        for (let i = 1; i <= 6; i++) {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            if (currentDate > TODAY) break;
-            
-            memories.push({
-                date: `${monthNames[i-1]} 2025`,
-                text: getMemoryText(i)
-            });
-        }
-        
-        memories.push({
-            date: "Сегодня",
-            text: `${appData.daysTogether} дней счастья вместе`
-        });
-        
-        return memories;
-    }
-    
-    function getMemoryText(month) {
-        const texts = [
-            "Первые свидания и знакомство",
-            "Углубление отношений и доверие",
-            "Совместные планы и мечты",
-            "Подготовка к праздникам",
-            "Новый год вместе",
-            "Настоящая любовь каждый день"
+        return [
+            {
+                date: "6 августа 2025",
+                text: "Первое общение в приложении (ты еще не знаешь об этом)"
+            },
+            {
+                date: "26 августа 2025",
+                text: "Первая прогулка - пошли нямать в бутербродную. Первый букет цветов"
+            },
+            {
+                date: "27 августа 2025",
+                text: "Вторая встреча - ни секунды не мог без клеш рояля"
+            },
+            {
+                date: "30 августа 2025",
+                text: "Красивый ресторан, где я была в шоке с цен. Начало наших отношений"
+            },
+            {
+                date: "7 сентября 2025",
+                text: "Вкусный завтрак в Астере"
+            },
+            {
+                date: "11 сентября 2025",
+                text: "Миленькая прогулка по парку и первый разговор о проблемах"
+            },
+            {
+                date: appData.todayFormatted,
+                text: `История продолжается... ${appData.daysTogether} дней счастья вместе`
+            }
         ];
-        return texts[month - 1] || "Наш прекрасный месяц";
     }
     
-    // Модалка фото
     function initPhotoModal() {
         const overlay = document.getElementById('photoModalOverlay');
         const closeBtn = document.getElementById('photoModalClose');
@@ -1120,7 +1081,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Кнопка сердечка
     function initHeartButton() {
         const heartBtn = document.getElementById('letterHeart');
         if (heartBtn) {
@@ -1142,7 +1102,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Создание летающего сердечка
     function createFlyingHeart(element) {
         const rect = element.getBoundingClientRect();
         const heart = document.createElement('div');
@@ -1165,7 +1124,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
     
-    // Анимации при скролле
     function initScrollAnimations() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1180,7 +1138,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Скрытие экрана загрузки
     function hideLoadingScreen() {
         setTimeout(() => {
             if (elements.loadingScreen) {
@@ -1192,7 +1149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
     
-    // Экран ошибки
     function showErrorScreen() {
         if (elements.loadingScreen) {
             elements.loadingScreen.innerHTML = `
@@ -1213,7 +1169,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Запуск
     init();
     
-    // Автообновление даты каждый день
     function scheduleDateUpdate() {
         const now = new Date();
         const tomorrow = new Date(now);
@@ -1229,7 +1184,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     scheduleDateUpdate();
     
-    // Экспортируем функции
     window.app = {
         openPhotoModal,
         getDaysTogether: () => appData.daysTogether,
@@ -1237,68 +1191,34 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-// Стили для анимаций и фона
+// Стили для анимаций и фона (ОСТАВЛЯЕМ КАК ЕСТЬ)
 const additionalStyles = document.createElement('style');
 additionalStyles.textContent = `
-    /* Анимации для звезд */
     @keyframes starPulse {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 0.8;
-        }
-        50% {
-            transform: scale(1.2);
-            opacity: 1;
-        }
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.2); opacity: 1; }
     }
     
     @keyframes starTwinkle {
-        0%, 100% {
-            opacity: 0.2;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1.1);
-        }
+        0%, 100% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.1); }
     }
     
     @keyframes lineGlow {
-        0%, 100% {
-            opacity: 0.3;
-        }
-        50% {
-            opacity: 0.8;
-        }
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.8; }
     }
     
     @keyframes moonGlow {
-        0%, 100% {
-            box-shadow: 
-                0 0 60px rgba(255, 236, 179, 0.6),
-                0 0 100px rgba(255, 236, 179, 0.4),
-                inset 20px -20px 20px rgba(0, 0, 0, 0.1);
-        }
-        50% {
-            box-shadow: 
-                0 0 80px rgba(255, 236, 179, 0.8),
-                0 0 120px rgba(255, 236, 179, 0.6),
-                inset 20px -20px 20px rgba(0, 0, 0, 0.1);
-        }
+        0%, 100% { box-shadow: 0 0 60px rgba(255, 236, 179, 0.6), 0 0 100px rgba(255, 236, 179, 0.4), inset 20px -20px 20px rgba(0, 0, 0, 0.1); }
+        50% { box-shadow: 0 0 80px rgba(255, 236, 179, 0.8), 0 0 120px rgba(255, 236, 179, 0.6), inset 20px -20px 20px rgba(0, 0, 0, 0.1); }
     }
     
     @keyframes flyUp {
-        0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(${Math.random() * 100 - 50}px, -100px) scale(0);
-            opacity: 0;
-        }
+        0% { transform: translate(0, 0) scale(1); opacity: 1; }
+        100% { transform: translate(calc(${Math.random() * 100 - 50}px), -100px) scale(0); opacity: 0; }
     }
     
-    /* Романтичный фон */
     .romantic-background {
         position: fixed;
         top: 0;
@@ -1310,8 +1230,7 @@ additionalStyles.textContent = `
         overflow: hidden;
     }
     
-    .constellation-container,
-    .twinkling-stars {
+    .constellation-container, .twinkling-stars {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -1319,7 +1238,6 @@ additionalStyles.textContent = `
         left: 0;
     }
     
-    /* Главное послание */
     .main-message {
         position: fixed;
         top: 0;
@@ -1373,58 +1291,27 @@ additionalStyles.textContent = `
     }
     
     @keyframes messageAppear {
-        0% {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 1; transform: translateY(0); }
     }
     
     @keyframes titleGlow {
-        0%, 100% {
-            text-shadow: 0 0 20px rgba(255, 107, 139, 0.5);
-        }
-        50% {
-            text-shadow: 0 0 30px rgba(255, 107, 139, 0.8);
-        }
+        0%, 100% { text-shadow: 0 0 20px rgba(255, 107, 139, 0.5); }
+        50% { text-shadow: 0 0 30px rgba(255, 107, 139, 0.8); }
     }
     
     @keyframes heartBeat {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.2);
-        }
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
     }
     
-    /* Адаптивность для мобильных */
     @media (max-width: 768px) {
-        .love-title {
-            font-size: 2.5rem;
-        }
-        
-        .love-text {
-            font-size: 1.2rem;
-            padding: 0 1rem;
-        }
-        
-        .message-heart {
-            font-size: 3.5rem;
-        }
-        
-        .moon {
-            width: 50px !important;
-            height: 50px !important;
-            right: 5% !important;
-            top: 5% !important;
-        }
+        .love-title { font-size: 2.5rem; }
+        .love-text { font-size: 1.2rem; padding: 0 1rem; }
+        .message-heart { font-size: 3.5rem; }
+        .moon { width: 50px !important; height: 50px !important; right: 5% !important; top: 5% !important; }
     }
     
-    /* Стили для треков в модалке */
     .modal-track .track-duration {
         font-size: 0.8rem;
         color: rgba(255, 255, 255, 0.6);
@@ -1432,179 +1319,74 @@ additionalStyles.textContent = `
         padding-right: 10px;
     }
     
-    .modal-track {
-        margin-bottom: 8px;
-        transition: all 0.3s ease;
-    }
+    .modal-track { margin-bottom: 8px; transition: all 0.3s ease; }
+    .modal-track:hover { background: rgba(255, 107, 139, 0.1); }
     
-    .modal-track:hover {
-        background: rgba(255, 107, 139, 0.1);
-    }
-    
-    /* Улучшенные стили для плеера */
     @media (max-width: 768px) {
-        .player-main {
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .player-cover {
-            margin: 0 auto 20px !important;
-        }
-        
-        .player-info {
-            width: 100% !important;
-        }
-        
-        .player-controls {
-            justify-content: center !important;
-        }
+        .player-main { flex-direction: column; text-align: center; }
+        .player-cover { margin: 0 auto 20px !important; }
+        .player-info { width: 100% !important; }
+        .player-controls { justify-content: center !important; }
     }
     
-    /* Исправление для iPhone с вырезом */
     @supports (padding: max(0px)) {
-        .main-message {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        .main-message { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
     }
     
-    /* Общие стили */
-    .no-photos-message {
-        text-align: center;
-        padding: 40px 20px;
-        background: rgba(255, 107, 139, 0.1);
-        border-radius: 20px;
-        border: 2px dashed rgba(255, 107, 139, 0.3);
-        margin: 20px 0;
-    }
-    
-    .no-photos-icon {
-        font-size: 3rem;
-        color: #ff6b8b;
-        margin-bottom: 20px;
-        opacity: 0.7;
-    }
-    
-    .no-photos-message h3 {
-        color: white;
-        margin-bottom: 15px;
-        font-size: 1.5rem;
-    }
-    
-    .no-photos-message p {
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 15px;
-        font-size: 1rem;
-    }
-    
-    .photo-examples {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 20px 0;
-        flex-wrap: wrap;
-    }
-    
-    .photo-example {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 8px 15px;
-        border-radius: 10px;
-        font-family: monospace;
-        color: #ff8e6b;
-        font-size: 0.9rem;
-    }
-    
-    .hint {
-        font-size: 0.9rem;
-        color: #6b8bff !important;
-        margin-top: 20px;
-    }
+    .photos-placeholder { display: none; }
     
     .error-screen {
-        text-align: center;
-        color: white;
-        padding: 40px;
+        text-align: center; color: white; padding: 40px;
     }
     
     .error-icon {
-        font-size: 4rem;
-        color: #ff6b8b;
-        margin-bottom: 20px;
+        font-size: 4rem; color: #ff6b8b; margin-bottom: 20px;
     }
     
     .error-screen h2 {
-        font-size: 2rem;
-        margin-bottom: 10px;
+        font-size: 2rem; margin-bottom: 10px;
     }
     
     .error-screen p {
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-        opacity: 0.8;
+        font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8;
     }
     
     .reload-btn {
-        background: #ff6b8b;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 25px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
+        background: #ff6b8b; color: white; border: none; padding: 12px 30px;
+        border-radius: 25px; font-size: 1rem; font-weight: 600; cursor: pointer;
         transition: all 0.3s ease;
     }
     
     .reload-btn:hover {
-        background: #ff8e6b;
-        transform: scale(1.05);
+        background: #ff8e6b; transform: scale(1.05);
     }
     
     .swipe-card {
-        flex: 0 0 auto;
-        width: 200px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        padding: 15px;
-        border: 1px solid rgba(255, 107, 139, 0.2);
-        cursor: grab;
-        backdrop-filter: blur(10px);
+        flex: 0 0 auto; width: 220px; background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px; padding: 15px; border: 1px solid rgba(255, 107, 139, 0.2);
+        cursor: grab; backdrop-filter: blur(10px);
     }
     
-    .swipe-card:active {
-        cursor: grabbing;
-    }
+    .swipe-card:active { cursor: grabbing; }
     
     .card-date {
-        font-size: 0.8rem;
-        color: #ff8e6b;
-        margin-bottom: 8px;
-        font-weight: 500;
+        font-size: 0.8rem; color: #ff8e6b; margin-bottom: 8px; font-weight: 500;
     }
     
     .card-text {
-        font-size: 1rem;
-        color: white;
-        margin-bottom: 12px;
-        line-height: 1.4;
+        font-size: 1rem; color: white; margin-bottom: 12px; line-height: 1.4;
     }
     
     .card-heart {
-        color: #ff6b8b;
-        font-size: 1.3rem;
-        text-align: right;
+        color: #ff6b8b; font-size: 1.3rem; text-align: right; cursor: pointer;
     }
     
     .timeline-item {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.6s ease;
+        opacity: 0; transform: translateY(30px); transition: all 0.6s ease;
     }
     
     .timeline-item.visible {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1; transform: translateY(0);
     }
 `;
 document.head.appendChild(additionalStyles);
